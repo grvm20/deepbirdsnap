@@ -15,11 +15,13 @@ from keras import optimizers
 
 from utils import get_labels
 
+from inceptionv4 import create_model
+
 nb_classes = 500
 class_name = get_labels() # dict with class id (starting from 0) as key and class label as value
 
 # TODO: Check image dim
-img_width, img_height = 150, 150
+img_width, img_height = 299, 299
 
 train_data_dir = '../train'
 validation_data_dir = '../validation'
@@ -27,7 +29,7 @@ test_data_dir = '../test'
 
 nb_train_samples = 42328
 nb_validation_samples = 3000
-nb_test_samples = 4501
+nb_test_samples = 4500
 
 train_datagen = ImageDataGenerator(
         rescale=1./255,
@@ -57,13 +59,19 @@ test_generator = test_datagen.flow_from_directory(
 
 
 # TODO: create model
-frozen_inception_v4 = 
+frozen_inceptionv4 = create_model(num_classes=nb_classes) 
+
+## Freezing all layers except the last
+for i in range(len(frozen_inceptionv4.layers) - 1):
+    if hasattr(frozen_inceptionv4.layers[i], 'trainable'):
+        frozen_inceptionv4.layers[i].trainable = False
+
 
 # TODO: load weights
 
 # build a classifier model to put on top of the convolutional model
 #top_model = Sequential()
-print(Flatten(input_shape=tf_model.output_shape[1:]))
+print(Flatten(input_shape=frozen_inceptionv4.output_shape[1:]))
 #top_model.add(Flatten(input_shape=tf_model.output_shape[1:]))
 #top_model.add(Dense(256, activation='relu'))
 #top_model.add(Dropout(0.5))
