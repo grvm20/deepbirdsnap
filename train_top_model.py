@@ -42,23 +42,23 @@ def train_top_model():
 
     print('Validation')
     validation_data = np.load(open('bottleneck/bottleneck_features_validation.npy', 'rb'))
-    print(validationa_data.shape)
+    print(validation_data.shape)
     val_size_per_class = 6
     validation_labels = get_fixed_labels(val_size_per_class)
     
     print('Test')
-    test_data = np.load(open('bottleneck/bottleneck_features_validation.npy', 'rb'))
+    test_data = np.load(open('bottleneck/bottleneck_features_test.npy', 'rb'))
     print(test_data.shape)
     test_size_per_class = 9
     test_labels = get_fixed_labels(test_size_per_class)
 
-    epochs = 100
+    epochs = 20
 
     tensorboard_callback = TensorBoard(log_dir='./logs/top_model/', histogram_freq=0, write_graph=True, write_images=False)
     checkpoint_callback = ModelCheckpoint('./models/top_model_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 
     # load top model architecture
-    top_model = create_top_model()
+    top_model, x, top_model_inputs = create_top_model()
     
     top_model.compile(optimizer=optimizers.Adam(),
         loss='categorical_crossentropy', metrics=['accuracy'])
@@ -71,6 +71,9 @@ def train_top_model():
               callbacks = [tensorboard_callback, checkpoint_callback])
 
     pandas.DataFrame(history_model.history).to_csv('./history/top_model.csv')
-   
+    
+
+    ev = top_model.evaluate(test_data,test_labels, batch_size=batch_size, verbose=1)
+    print(ev)
 train_top_model()
 gc.collect()

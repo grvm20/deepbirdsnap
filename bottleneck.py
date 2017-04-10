@@ -39,7 +39,7 @@ def save_bottlebeck_features():
 
     np.save(open(bottleneck_dir + 'bottleneck_features_validation.npy', 'wb'), bottleneck_features_validation)
 
-    """
+    
     train_generator = train_datagen.flow_from_directory(train_data_dir,
                         target_size=(img_width, img_height),
                         batch_size=batch_size,
@@ -50,7 +50,7 @@ def save_bottlebeck_features():
             train_generator, nb_train_samples // batch_size)
 
     np.save(open(bottleneck_dir + 'bottleneck_features_train.npy', 'wb'), bottleneck_features_train)
-
+    """
     test_generator = test_datagen.flow_from_directory(
                          test_data_dir,
                          target_size=(img_width, img_height),
@@ -60,7 +60,7 @@ def save_bottlebeck_features():
 
     
     bottleneck_features_test = model.predict_generator(
-                                    test_generator, nb_validation_samples // batch_size)
+                                    test_generator, nb_test_samples // batch_size)
     
     np.save(open(bottleneck_dir + 'bottleneck_features_test.npy', 'wb'), bottleneck_features_test)
 

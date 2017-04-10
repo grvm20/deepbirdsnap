@@ -278,9 +278,10 @@ def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
 def create_model(num_classes=1001, dropout_prob=0.2, weights='imagenet', include_top=True):
     return inception_v4(num_classes, dropout_prob, weights, include_top)
 
-def create_top_model(weights=None):
+def create_top_model(inputs=None, weights=None):
     # input to top model is the activation after the last conv block of inception
-    inputs = Input((8,8,1536))
+    if inputs is None:
+        inputs = Input((8,8,1536))
     x = AveragePooling2D((8, 8), padding='valid')(inputs)
     x = Dropout(0.2)(x)
     x = Flatten()(x)
@@ -288,7 +289,7 @@ def create_top_model(weights=None):
     top_model = Model(input=inputs, output=x)
     if weights:
         top_model.load_weights(weights)
-    return top_model
+    return top_model,x,inputs
        
 def create_model_with_frozen_base():
     # get base model of inceptionv4
@@ -312,3 +313,18 @@ def create_model_with_frozen_base():
     frozen_inceptionv4 = Model(input=inputs, output=x)
     
     return frozen_inceptionv4
+
+def create_defrost_model(top_weights):
+    # get base model of inceptionv4
+    # here x is the last layer of base, to be linked with top
+    base, base_x, base_inputs= create_model(num_classes=500, include_top=False, weights='imagenet')
+
+    # Create top and link base to it
+    top, top_x, top_inputs = create_top_model(weights=top_weights) 
+
+    # create the model to defrost
+    #inputs = Input((299,299,3))
+    defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
+    
+    return defrost_inceptionv4
+
