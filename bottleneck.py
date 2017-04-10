@@ -25,21 +25,21 @@ def save_bottlebeck_features():
     train_datagen = ImageDataGenerator(rescale=1. / 255)
     test_datagen = ImageDataGenerator(rescale=1./255)
 
-    model = create_model(num_classes=nb_classes, include_top=False)
+    model, x, inputs = create_model(num_classes=nb_classes, include_top=False, weights='imagenet')
+    """
+    validation_generator = test_datagen.flow_from_directory(
+                        validation_data_dir,
+                        target_size=(img_width, img_height),
+                        batch_size=batch_size,
+                        shuffle=False,
+                        class_mode=None)
 
-#    validation_generator = test_datagen.flow_from_directory(
-#                        validation_data_dir,
-#                        target_size=(img_width, img_height),
-#                        batch_size=batch_size,
-#                        shuffle=False,
-#                        class_mode=None)
+    bottleneck_features_validation = model.predict_generator(
+                                    validation_generator, nb_validation_samples // batch_size)
 
-#    bottleneck_features_validation = model.predict_generator(
-#                                    validation_generator, nb_validation_samples // batch_size)
+    np.save(open(bottleneck_dir + 'bottleneck_features_validation.npy', 'wb'), bottleneck_features_validation)
 
-#    np.save(open(bottleneck_dir + 'bottleneck_features_validation.npy', 'wb'), bottleneck_features_validation)
-
-
+    """
     train_generator = train_datagen.flow_from_directory(train_data_dir,
                         target_size=(img_width, img_height),
                         batch_size=batch_size,

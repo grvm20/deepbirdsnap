@@ -6,19 +6,19 @@ import time, pickle, pandas
 import numpy as np
 
 from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential, load_model
-from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.layers import Activation, Dropout, Flatten, Dense
+from keras.models import Model, Sequential, load_model
+from keras.layers import Input, Convolution2D, MaxPooling2D, ZeroPadding2D
+from keras.layers import AveragePooling2D, Activation, Dropout, Flatten, Dense
 from keras.callbacks import TensorBoard, ModelCheckpoint
 from keras import backend
 from keras import optimizers
 
-from utils import get_labels
+#from utils import get_labels
 
 from inceptionv4 import create_model
 
 nb_classes = 500
-class_name = get_labels() # dict with class id (starting from 0) as key and class label as value
+#class_name = get_labels() # dict with class id (starting from 0) as key and class label as value
 
 img_width, img_height =299, 299 
 
@@ -31,35 +31,58 @@ nb_validation_samples = 3000
 nb_test_samples = 4500
 
 train_datagen = ImageDataGenerator(
-        rescale=1./255)
-#        shear_range=0.2,
-#        zoom_range=0.2,
-#        horizontal_flip=True)
+        rescale=1./255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True)
 
 test_datagen = ImageDataGenerator(rescale=1./255)
+
+
+batch_size =10 
 
 train_generator = train_datagen.flow_from_directory(
         train_data_dir,
         target_size=(img_width, img_height),
-        batch_size=16)
+        batch_size=batch_size)
 
 validation_generator = test_datagen.flow_from_directory(
         validation_data_dir,
         target_size=(img_width, img_height),
-        batch_size=16)
+        batch_size=batch_size)
 
 test_generator = test_datagen.flow_from_directory(
         test_data_dir,
         target_size=(img_width, img_height),
-        batch_size=16)
+        batch_size=batch_size)
 
-#create model
-frozen_inceptionv4 = create_model(num_classes=nb_classes) 
+#get base model of inceptionv4
+inceptionv4_base, x, inputs= create_model(num_classes=nb_classes, include_top=False,weights='imagenet') 
+print(inceptionv4_base.summary())
+#frozen_inceptionv4 = Sequential()
+#frozen_inceptionv4.add(inceptionv4_base)
+print('Inceptionv4 Base loaded')
 
-## Freezing all layers except the last
-for i in range(len(frozen_inceptionv4.layers) - 1):
-    if hasattr(frozen_inceptionv4.layers[i], 'trainable'):
-        frozen_inceptionv4.layers[i].trainable = False
+## Freezing all layers of inceptionv4 base
+for i in range(len(inceptionv4_base.layers)):
+    if hasattr(inceptionv4_base.layers[i], 'trainable'):
+        inceptionv4_base.layers[i].trainable = False
+print('Froze weights')
+
+#frozen_inceptionv4 = Sequential()
+#frozen_inceptionv4.add(Dense(1000, input_shape=(1536,), activation='relu'))
+#frozen_inceptionv4.add(Dropout(0.5))
+#frozen_inceptionv4.add(Dense(nb_classes, activation='softmax'))
+
+x = AveragePooling2D((8, 8), padding='valid')(x)
+x = Dropout(0.2)(x)
+x = Flatten()(x)
+x = Dense(units=nb_classes, activation='softmax')(x)
+frozen_inceptionv4 = Model(input=inputs, output=x)
+
+#x = inceptionv4_base(inputs)
+#predictions = with_top_model(inceptionv4_base)
+#frozen_inceptionv4 = Model(input=inputs, output=predictions)
 
 print(frozen_inceptionv4.summary())
 
@@ -76,13 +99,13 @@ frozen_inceptionv4.compile(loss = 'categorical_crossentropy',
 
 hist_frozen_inceptionv4 = frozen_inceptionv4.fit_generator(
         train_generator,
-        samples_per_epoch = nb_train_samples,
-        nb_epoch = nb_epoch,
+        nb_train_samples//batch_size,
+        epochs = nb_epoch,
         validation_data = validation_generator,
-        nb_val_samples = nb_validation_samples,
+        validation_steps = nb_validation_samples//batch_size,
         verbose = 1,
         initial_epoch = 0,
         callbacks=[frozen_tensorboard_callback, frozen_checkpoint_callback]
 )
 
-pandas.DataFrame(hist_frozen_convet.history).to_csv("./history/frozen_inceptionv4.csv")
+#pandas.DataFrame(hist_frozen_convet.history).to_csv("./history/frozen_inceptionv4.csv")
