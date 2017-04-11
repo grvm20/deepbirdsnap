@@ -58,12 +58,12 @@ def defrost_train():
 
     nb_epoch = 5
     batch_size = 8
-
+    
     train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size)
-
+    
     validation_generator = test_datagen.flow_from_directory(
     validation_data_dir,
     target_size=(img_width, img_height),
@@ -78,12 +78,12 @@ def defrost_train():
     checkpoint_callback = ModelCheckpoint('./models/defrost_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 
     # load top model architecture
-    defrost_model = create_defrost_model('top_model_weights_best.hdf5')
+    defrost_model = create_defrost_model('top_model_weights_best.hdf5', freeze_level=2)
     
-    defrost_model.compile(optimizer=optimizers.Adam(lr=0.0000001), #tried 6 zeros
+    defrost_model.compile(optimizer=optimizers.Adam(lr=1e-5), #tried 6 zeros
         loss='categorical_crossentropy', metrics=['accuracy'])
-
-    """history_model = defrost_model.fit(train_data, train_labels,
+    """
+    history_model = defrost_model.fit(train_data, train_labels,
               epochs=epochs,
               batch_size=batch_size,
               verbose=1,
@@ -101,10 +101,11 @@ def defrost_train():
         callbacks=[tensorboard_callback, checkpoint_callback]
     )
 
-    pandas.DataFrame(history_model.history).to_csv('./history/defrost_model.csv')
+    pandas.DataFrame(hist_model.history).to_csv('./history/defrost_model.csv')
     
-
-    ev = top_model.evaluate(test_data,test_labels, batch_size=batch_size, verbose=1)
-    print(ev)
+    #ev_validation = defrost_model.evaluate_generator(validation_generator,nb_validation_samples//batch_size)
+    #print(ev_validation)
+    #ev_test = defrost_model.evaluate(test_data,test_labels, batch_size=batch_size, verbose=1)
+    #print(ev_test)
 defrost_train()
 gc.collect()
