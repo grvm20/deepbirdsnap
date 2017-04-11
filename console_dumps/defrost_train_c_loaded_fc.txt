@@ -1,0 +1,24 @@
+Epoch 1/5
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3870 get requests, put_count=2986 evicted_count=1000 eviction_rate=0.334896 and unsatisfied allocation rate=0.512661
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+   5/5290 [..............................] - ETA: 12127s - loss: 4.5568 - acc: 0.1500I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+  11/5290 [..............................] - ETA: 8038s - loss: 4.0434 - acc: 0.2045I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 237 get requests, put_count=1128 evicted_count=1000 eviction_rate=0.886525 and unsatisfied allocation rate=0.578059
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+  17/5290 [..............................] - ETA: 6834s - loss: 3.9868 - acc: 0.2279I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3917 get requests, put_count=3620 evicted_count=1000 eviction_rate=0.276243 and unsatisfied allocation rate=0.347715
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 720 to 792
+  38/5290 [..............................] - ETA: 5612s - loss: 3.9949 - acc: 0.2270I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 31550 get requests, put_count=31628 evicted_count=1000 eviction_rate=0.0316176 and unsatisfied allocation rate=0.03458
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1863 to 2049
+5290/5290 [==============================] - 4934s - loss: 2.0233 - acc: 0.4896 - val_loss: 2.9808 - val_acc: 0.4937
+Epoch 2/5
+5290/5290 [==============================] - 4925s - loss: 1.3560 - acc: 0.6295 - val_loss: 2.7129 - val_acc: 0.5290
+Epoch 3/5
+5290/5290 [==============================] - 4932s - loss: 1.0347 - acc: 0.7097 - val_loss: 2.2642 - val_acc: 0.5667
+Epoch 4/5
+5290/5290 [==============================] - 4922s - loss: 0.7981 - acc: 0.7730 - val_loss: 1.9307 - val_acc: 0.5867
+Epoch 5/5
+5290/5290 [==============================] - 4923s - loss: 0.6214 - acc: 0.8235 - val_loss: 2.3220 - val_acc: 0.5843
+Exception ignored in: <bound method BaseSession.__del__ of <tensorflow.python.client.session.Session object at 0x7f1fec3522b0>>
+Traceback (most recent call last):
+  File "/home/ubuntu/birdsnap_dataset/deepbirdsnap/newbiirds/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 582, in __del__
+UnboundLocalError: local variable 'status' referenced before assignment
+(deepbirdsnap/newbirds) ➜  deepbirdsnap git:(master) ✗v

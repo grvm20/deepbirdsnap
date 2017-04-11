@@ -6,3 +6,6 @@ logs/
 models/
 newbirds/
 birds/
+best_weights/
+parts_info.txt
+parts_info_small.txt

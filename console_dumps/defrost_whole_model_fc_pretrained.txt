@@ -1,0 +1,57 @@
+python3 defrost_train_entire_model.py
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcublas.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcudnn.so.5 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcufft.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcurand.so.8.0 locally
+Using TensorFlow backend.
+Found 42320 images belonging to 500 classes.
+Found 3000 images belonging to 500 classes.
+Found 4500 images belonging to 500 classes.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE3 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:910] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties:
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:00:1e.0
+Total memory: 11.17GiB
+Free memory: 11.11GiB
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:00:1e.0)
+Loaded weights
+/home/ubuntu/birdsnap_dataset/deepbirdsnap/inceptionv4.py:289: UserWarning: Update your `Model` call to the Keras 2 API: `Model(outputs=Tensor("de..., inputs=Tensor("in...)`
+  top_model = Model(input=inputs, output=x)
+/home/ubuntu/birdsnap_dataset/deepbirdsnap/inceptionv4.py:327: UserWarning: Update your `Model` call to the Keras 2 API: `Model(outputs=Tensor("mo..., inputs=Tensor("in...)`
+  defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
+Epoch 1/5
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3870 get requests, put_count=2986 evicted_count=1000 eviction_rate=0.334896 and unsatisfied allocation rate=0.512661
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+   5/5290 [..............................] - ETA: 12249s - loss: 4.2264 - acc: 0.2000I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+  11/5290 [..............................] - ETA: 8056s - loss: 4.1108 - acc: 0.2159I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 237 get requests, put_count=1128 evicted_count=1000 eviction_rate=0.886525 and unsatisfied allocation rate=0.578059
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+  17/5290 [..............................] - ETA: 6822s - loss: 3.9877 - acc: 0.2279I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3917 get requests, put_count=3620 evicted_count=1000 eviction_rate=0.276243 and unsatisfied allocation rate=0.347715
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 720 to 792
+  38/5290 [..............................] - ETA: 5556s - loss: 4.0513 - acc: 0.2336I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 31549 get requests, put_count=31620 evicted_count=1000 eviction_rate=0.0316256 and unsatisfied allocation rate=0.034803
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1863 to 2049
+5290/5290 [==============================] - 4913s - loss: 2.8896 - acc: 0.3602 - val_loss: 3.6309 - val_acc: 0.3990
+Epoch 2/5
+5290/5290 [==============================] - 4907s - loss: 2.1628 - acc: 0.4625 - val_loss: 3.4673 - val_acc: 0.4293
+Epoch 3/5
+5290/5290 [==============================] - 4906s - loss: 1.9278 - acc: 0.5048 - val_loss: 3.1524 - val_acc: 0.4610
+Epoch 4/5
+5290/5290 [==============================] - 4900s - loss: 1.7640 - acc: 0.5357 - val_loss: 3.2318 - val_acc: 0.4673
+Epoch 5/5
+5290/5290 [==============================] - 4905s - loss: 1.6616 - acc: 0.5596 - val_loss: 3.1142 - val_acc: 0.4763
+Traceback (most recent call last):
+  File "defrost_train_entire_model.py", line 109, in <module>
+    defrost_train()
+  File "defrost_train_entire_model.py", line 104, in defrost_train
+    pandas.DataFrame(history_model.history).to_csv('./history/defrost_model.csv')
+NameError: name 'history_model' is not defined
+(newbirds) ➜  deepbirdsnap git:(master) ✗

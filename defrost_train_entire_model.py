@@ -78,8 +78,8 @@ def defrost_train():
     checkpoint_callback = ModelCheckpoint('./models/defrost_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 
     # load top model architecture
-    defrost_model = create_model_with_weights('best_weights/defrost_weights_train_c_loaded_fc.hdf5', freeze_level=2)
-    
+    defrost_model = create_model_with_weights('best_weights/defrost_weights_train_c_loaded_fc.hdf5', freeze_level=1)
+
     defrost_model.compile(optimizer=optimizers.Adam(lr=1e-5), #tried 6 zeros
         loss='categorical_crossentropy', metrics=['accuracy'])
     """

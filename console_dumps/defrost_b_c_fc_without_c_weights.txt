@@ -1,0 +1,20 @@
+Epoch 1/5
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3870 get requests, put_count=2986 evicted_count=1000 eviction_rate=0.334896 and unsatisfied allocation rate=0.512661
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+   5/5290 [..............................] - ETA: 13313s - loss: 4.5000 - acc: 0.0750I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+  11/5290 [..............................] - ETA: 8531s - loss: 4.4039 - acc: 0.1364I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 237 get requests, put_count=1128 evicted_count=1000 eviction_rate=0.886525 and unsatisfied allocation rate=0.578059
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+  17/5290 [..............................] - ETA: 7127s - loss: 4.4679 - acc: 0.1691I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3918 get requests, put_count=3623 evicted_count=1000 eviction_rate=0.276014 and unsatisfied allocation rate=0.347116
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 720 to 792
+  38/5290 [..............................] - ETA: 5695s - loss: 4.0737 - acc: 0.2368I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 31549 get requests, put_count=31602 evicted_count=1000 eviction_rate=0.0316436 and unsatisfied allocation rate=0.0353735
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1863 to 2049
+5290/5290 [==============================] - 4906s - loss: 2.0200 - acc: 0.4903 - val_loss: 3.0576 - val_acc: 0.5013
+Epoch 2/5
+5290/5290 [==============================] - 4903s - loss: 1.3670 - acc: 0.6255 - val_loss: 2.6360 - val_acc: 0.5330
+Epoch 3/5
+5290/5290 [==============================] - 4890s - loss: 1.0265 - acc: 0.7089 - val_loss: 2.3894 - val_acc: 0.5670
+Epoch 4/5
+5290/5290 [==============================] - 4899s - loss: 0.8043 - acc: 0.7721 - val_loss: 2.0603 - val_acc: 0.5853
+Epoch 5/5
+5290/5290 [==============================] - 4885s - loss: 0.6188 - acc: 0.8249 - val_loss: 1.9715 - val_acc: 0.5997
+

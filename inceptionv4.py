@@ -268,6 +268,8 @@ def inception_v4(num_classes, dropout_keep_prob, weights, include_top, freeze_le
 
     model = Model(inputs, x, name='inception_v4')
 
+    print(model.summary())
+
     # load weights
     if weights == 'imagenet':
         if K.image_data_format() == 'channels_first':
@@ -329,6 +331,7 @@ def create_model_with_weights(weights, freeze_level=None):
 
     # create the frozen model
     defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
+    #print(defrost_inceptionv4.summary())
     defrost_inceptionv4.load_weights(weights)
 
     return defrost_inceptionv4

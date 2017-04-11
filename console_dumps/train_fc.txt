@@ -1,0 +1,184 @@
+ deepbirdsnap git:(master) ✗ python3 train_top_model.py
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcublas.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcudnn.so.5 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcufft.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcurand.so.8.0 locally
+Using TensorFlow backend.
+['Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n']
+500 classes found
+42320 images found in train_labels.txt
+Train
+(42320, 8, 8, 1536)
+['Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n', 'Acadian_Flycatcher\n']
+500 classes found
+42320 images found in train_labels.txt
+42320
+Validation
+(3000, 8, 8, 1536)
+Test
+(3000, 8, 8, 1536)
+/home/ubuntu/birdsnap_dataset/deepbirdsnap/inceptionv4.py:288: UserWarning: Update your `Model` call to the Keras 2 API: `Model(inputs=Tensor("in..., outputs=Tensor("de...)`
+  top_model = Model(input=inputs, output=x)
+Train on 42320 samples, validate on 3000 samples
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE3 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:910] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties:
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:00:1e.0
+Total memory: 11.17GiB
+Free memory: 11.11GiB
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:00:1e.0)
+Epoch 1/100
+42320/42320 [==============================] - 18s - loss: 3.8845 - acc: 0.1862 - val_loss: 3.0676 - val_acc: 0.2780
+Epoch 2/100
+42320/42320 [==============================] - 18s - loss: 2.7412 - acc: 0.3386 - val_loss: 2.7392 - val_acc: 0.3513
+Epoch 3/100
+42320/42320 [==============================] - 17s - loss: 2.3929 - acc: 0.4116 - val_loss: 2.5845 - val_acc: 0.3830
+Epoch 4/100
+42320/42320 [==============================] - 16s - loss: 2.1677 - acc: 0.4578 - val_loss: 2.5125 - val_acc: 0.3913
+Epoch 5/100
+42320/42320 [==============================] - 17s - loss: 2.0032 - acc: 0.4931 - val_loss: 2.4275 - val_acc: 0.4123
+Epoch 6/100
+42320/42320 [==============================] - 16s - loss: 1.8713 - acc: 0.5208 - val_loss: 2.3902 - val_acc: 0.4193
+Epoch 7/100
+42320/42320 [==============================] - 17s - loss: 1.7580 - acc: 0.5475 - val_loss: 2.3778 - val_acc: 0.4247
+Epoch 8/100
+42320/42320 [==============================] - 16s - loss: 1.6677 - acc: 0.5716 - val_loss: 2.3597 - val_acc: 0.4287
+Epoch 9/100
+42320/42320 [==============================] - 17s - loss: 1.5910 - acc: 0.5859 - val_loss: 2.3218 - val_acc: 0.4380
+Epoch 10/100
+42320/42320 [==============================] - 16s - loss: 1.5193 - acc: 0.6022 - val_loss: 2.3249 - val_acc: 0.4470
+Epoch 11/100
+42320/42320 [==============================] - 17s - loss: 1.4537 - acc: 0.6187 - val_loss: 2.3050 - val_acc: 0.4480
+Epoch 12/100
+42320/42320 [==============================] - 16s - loss: 1.3985 - acc: 0.6319 - val_loss: 2.3119 - val_acc: 0.4453
+Epoch 13/100
+42320/42320 [==============================] - 17s - loss: 1.3446 - acc: 0.6458 - val_loss: 2.3041 - val_acc: 0.4533
+Epoch 14/100
+42320/42320 [==============================] - 16s - loss: 1.3042 - acc: 0.6551 - val_loss: 2.2876 - val_acc: 0.4563
+Epoch 15/100
+42320/42320 [==============================] - 17s - loss: 1.2593 - acc: 0.6658 - val_loss: 2.2971 - val_acc: 0.4543
+Epoch 16/100
+42320/42320 [==============================] - 16s - loss: 1.2222 - acc: 0.6749 - val_loss: 2.3004 - val_acc: 0.4607
+Epoch 17/100
+42320/42320 [==============================] - 17s - loss: 1.1868 - acc: 0.6801 - val_loss: 2.3042 - val_acc: 0.4587
+Epoch 18/100
+42320/42320 [==============================] - 16s - loss: 1.1525 - acc: 0.6923 - val_loss: 2.2847 - val_acc: 0.4703
+Epoch 19/100
+42320/42320 [==============================] - 17s - loss: 1.1239 - acc: 0.6990 - val_loss: 2.3092 - val_acc: 0.4707
+Epoch 20/100
+42320/42320 [==============================] - 16s - loss: 1.0952 - acc: 0.7052 - val_loss: 2.3019 - val_acc: 0.4710
+Epoch 21/100
+42320/42320 [==============================] - 17s - loss: 1.0677 - acc: 0.7116 - val_loss: 2.3051 - val_acc: 0.4807
+Epoch 22/100
+42320/42320 [==============================] - 16s - loss: 1.0452 - acc: 0.7163 - val_loss: 2.3129 - val_acc: 0.4643
+Epoch 23/100
+42320/42320 [==============================] - 17s - loss: 1.0200 - acc: 0.7205 - val_loss: 2.3106 - val_acc: 0.4587
+Epoch 24/100
+42320/42320 [==============================] - 16s - loss: 0.9925 - acc: 0.7304 - val_loss: 2.3151 - val_acc: 0.4773
+Epoch 25/100
+42320/42320 [==============================] - 17s - loss: 0.9755 - acc: 0.7341 - val_loss: 2.3276 - val_acc: 0.4663
+Epoch 26/100
+42320/42320 [==============================] - 16s - loss: 0.9591 - acc: 0.7366 - val_loss: 2.3282 - val_acc: 0.4677
+Epoch 27/100
+42320/42320 [==============================] - 17s - loss: 0.9363 - acc: 0.7396 - val_loss: 2.3393 - val_acc: 0.4630
+Epoch 28/100
+42320/42320 [==============================] - 16s - loss: 0.9214 - acc: 0.7473 - val_loss: 2.3328 - val_acc: 0.4797
+Epoch 29/100
+42320/42320 [==============================] - 17s - loss: 0.9016 - acc: 0.7520 - val_loss: 2.3347 - val_acc: 0.4803
+Epoch 30/100
+42320/42320 [==============================] - 16s - loss: 0.8840 - acc: 0.7562 - val_loss: 2.3454 - val_acc: 0.4657
+Epoch 31/100
+42320/42320 [==============================] - 17s - loss: 0.8692 - acc: 0.7613 - val_loss: 2.3584 - val_acc: 0.4670
+Epoch 32/100
+42320/42320 [==============================] - 16s - loss: 0.8592 - acc: 0.7599 - val_loss: 2.3761 - val_acc: 0.4750
+Epoch 33/100
+42320/42320 [==============================] - 17s - loss: 0.8440 - acc: 0.7650 - val_loss: 2.3533 - val_acc: 0.4870
+Epoch 34/100
+42320/42320 [==============================] - 16s - loss: 0.8344 - acc: 0.7666 - val_loss: 2.3719 - val_acc: 0.4750
+Epoch 35/100
+42320/42320 [==============================] - 17s - loss: 0.8256 - acc: 0.7681 - val_loss: 2.3547 - val_acc: 0.4860
+Epoch 36/100
+42320/42320 [==============================] - 16s - loss: 0.8034 - acc: 0.7747 - val_loss: 2.3848 - val_acc: 0.4810
+Epoch 37/100
+42320/42320 [==============================] - 17s - loss: 0.7910 - acc: 0.7791 - val_loss: 2.3758 - val_acc: 0.4813
+Epoch 38/100
+42320/42320 [==============================] - 16s - loss: 0.7765 - acc: 0.7842 - val_loss: 2.3892 - val_acc: 0.4827
+Epoch 39/100
+42320/42320 [==============================] - 17s - loss: 0.7689 - acc: 0.7845 - val_loss: 2.4018 - val_acc: 0.4853
+Epoch 40/100
+42320/42320 [==============================] - 16s - loss: 0.7648 - acc: 0.7855 - val_loss: 2.4114 - val_acc: 0.4817
+Epoch 41/100
+42320/42320 [==============================] - 17s - loss: 0.7544 - acc: 0.7876 - val_loss: 2.4004 - val_acc: 0.4830
+Epoch 42/100
+42320/42320 [==============================] - 16s - loss: 0.7424 - acc: 0.7886 - val_loss: 2.4185 - val_acc: 0.4857
+Epoch 43/100
+42320/42320 [==============================] - 17s - loss: 0.7350 - acc: 0.7928 - val_loss: 2.4195 - val_acc: 0.4827
+Epoch 44/100
+42320/42320 [==============================] - 16s - loss: 0.7334 - acc: 0.7894 - val_loss: 2.4219 - val_acc: 0.4780
+Epoch 45/100
+42320/42320 [==============================] - 17s - loss: 0.7218 - acc: 0.7941 - val_loss: 2.4254 - val_acc: 0.4820
+Epoch 46/100
+42320/42320 [==============================] - 16s - loss: 0.7059 - acc: 0.7991 - val_loss: 2.4452 - val_acc: 0.4827
+Epoch 47/100
+42320/42320 [==============================] - 17s - loss: 0.7048 - acc: 0.7977 - val_loss: 2.4333 - val_acc: 0.4917
+Epoch 48/100
+42320/42320 [==============================] - 16s - loss: 0.6934 - acc: 0.8018 - val_loss: 2.4586 - val_acc: 0.4847
+Epoch 49/100
+42320/42320 [==============================] - 17s - loss: 0.6847 - acc: 0.8038 - val_loss: 2.4665 - val_acc: 0.4717
+Epoch 50/100
+42320/42320 [==============================] - 16s - loss: 0.6793 - acc: 0.8076 - val_loss: 2.4940 - val_acc: 0.4727
+Epoch 51/100
+42320/42320 [==============================] - 17s - loss: 0.6720 - acc: 0.8091 - val_loss: 2.4497 - val_acc: 0.4847
+Epoch 52/100
+42320/42320 [==============================] - 16s - loss: 0.6690 - acc: 0.8074 - val_loss: 2.4854 - val_acc: 0.4783
+Epoch 53/100
+42320/42320 [==============================] - 17s - loss: 0.6648 - acc: 0.8097 - val_loss: 2.4904 - val_acc: 0.4837
+Epoch 54/100
+42320/42320 [==============================] - 16s - loss: 0.6534 - acc: 0.8134 - val_loss: 2.5071 - val_acc: 0.4733
+Epoch 55/100
+42320/42320 [==============================] - 17s - loss: 0.6502 - acc: 0.8127 - val_loss: 2.4935 - val_acc: 0.4767
+Epoch 56/100
+32640/42320 [======================>.......] - ETA: 3s - loss: 0.6400 - acc: 0.8152^[:
+42320/42320 [==============================] - 16s - loss: 0.6470 - acc: 0.8136 - val_loss: 2.4940 - val_acc: 0.4930
+Epoch 57/100
+42320/42320 [==============================] - 17s - loss: 0.6382 - acc: 0.8146 - val_loss: 2.5026 - val_acc: 0.4833
+Epoch 58/100
+42320/42320 [==============================] - 16s - loss: 0.6322 - acc: 0.8176 - val_loss: 2.5083 - val_acc: 0.4877
+Epoch 59/100
+42320/42320 [==============================] - 17s - loss: 0.6269 - acc: 0.8173 - val_loss: 2.5100 - val_acc: 0.4853
+Epoch 60/100
+42320/42320 [==============================] - 16s - loss: 0.6244 - acc: 0.8200 - val_loss: 2.5366 - val_acc: 0.4800
+Epoch 61/100
+42320/42320 [==============================] - 17s - loss: 0.6231 - acc: 0.8157 - val_loss: 2.5366 - val_acc: 0.4860
+Epoch 62/100
+42320/42320 [==============================] - 16s - loss: 0.6135 - acc: 0.8222 - val_loss: 2.5323 - val_acc: 0.4790
+Epoch 63/100
+42320/42320 [==============================] - 17s - loss: 0.6070 - acc: 0.8235 - val_loss: 2.5184 - val_acc: 0.4877
+Epoch 64/100
+42320/42320 [==============================] - 16s - loss: 0.6101 - acc: 0.8211 - val_loss: 2.5399 - val_acc: 0.4880
+Epoch 65/100
+42320/42320 [==============================] - 17s - loss: 0.6026 - acc: 0.8232 - val_loss: 2.5399 - val_acc: 0.4910
+Epoch 66/100
+42320/42320 [==============================] - 16s - loss: 0.5922 - acc: 0.8277 - val_loss: 2.5479 - val_acc: 0.4903
+Epoch 67/100
+42320/42320 [==============================] - 17s - loss: 0.5885 - acc: 0.8262 - val_loss: 2.5726 - val_acc: 0.4783
+Epoch 68/100
+42320/42320 [==============================] - 16s - loss: 0.5880 - acc: 0.8277 - val_loss: 2.5702 - val_acc: 0.4777
+Epoch 69/100
+42320/42320 [==============================] - 17s - loss: 0.5801 - acc: 0.8307 - val_loss: 2.5790 - val_acc: 0.4800
+Epoch 70/100
+42320/42320 [==============================] - 16s - loss: 0.5837 - acc: 0.8274 - val_loss: 2.5650 - val_acc: 0.4760
+Epoch 71/100
+42320/42320 [==============================] - 17s - loss: 0.5707 - acc: 0.8334 - val_loss: 2.5783 - val_acc: 0.4827
+Epoch 72/100
+42320/42320 [==============================] - 16s - loss: 0.5699 - acc: 0.8303 - val_loss: 2.5833 - val_acc: 0.4793
