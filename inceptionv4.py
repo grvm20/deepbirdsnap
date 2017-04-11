@@ -21,7 +21,7 @@ WEIGHTS_PATH = 'https://github.com/kentsommer/keras-inceptionV4/releases/downloa
 WEIGHTS_PATH_NO_TOP = 'https://github.com/kentsommer/keras-inceptionV4/releases/download/2.1/inception-v4_weights_tf_dim_ordering_tf_kernels_notop.h5'
 
 def conv2d_bn(x, nb_filter, num_row, num_col,
-              padding='same', strides=(1, 1), use_bias=False):
+              padding='same', strides=(1, 1), use_bias=False, freeze=False):
     """
     Utility function to apply conv + BN. 
     (Slightly modified from https://github.com/fchollet/keras/blob/master/keras/applications/inception_v3.py)
@@ -34,43 +34,46 @@ def conv2d_bn(x, nb_filter, num_row, num_col,
                       strides=strides,
                       padding=padding,
                       use_bias=use_bias)(x)
+    if freeze:
+        x.trainable = False
+
     x = BatchNormalization(axis=channel_axis, scale=False)(x)
     x = Activation('relu')(x)
     return x
 
-def block_inception_a(input):
+def block_inception_a(input, freeze=False):
     if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
-    branch_0 = conv2d_bn(input, 96, 1, 1)
+    branch_0 = conv2d_bn(input, 96, 1, 1, freeze=freeze)
 
-    branch_1 = conv2d_bn(input, 64, 1, 1)
-    branch_1 = conv2d_bn(branch_1, 96, 3, 3)
+    branch_1 = conv2d_bn(input, 64, 1, 1, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 96, 3, 3, freeze=freeze)
 
-    branch_2 = conv2d_bn(input, 64, 1, 1)
-    branch_2 = conv2d_bn(branch_2, 96, 3, 3)
-    branch_2 = conv2d_bn(branch_2, 96, 3, 3)
+    branch_2 = conv2d_bn(input, 64, 1, 1, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 96, 3, 3, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 96, 3, 3, freeze=freeze)
 
     branch_3 = AveragePooling2D((3,3), strides=(1,1), padding='same')(input)
-    branch_3 = conv2d_bn(branch_3, 96, 1, 1)
+    branch_3 = conv2d_bn(branch_3, 96, 1, 1, freeze=freeze)
 
     x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
     return x
 
 
-def block_reduction_a(input):
+def block_reduction_a(input, freeze=False):
     if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
-    branch_0 = conv2d_bn(input, 384, 3, 3, strides=(2,2), padding='valid')
+    branch_0 = conv2d_bn(input, 384, 3, 3, strides=(2,2), padding='valid', freeze=freeze)
 
-    branch_1 = conv2d_bn(input, 192, 1, 1)
-    branch_1 = conv2d_bn(branch_1, 224, 3, 3)
-    branch_1 = conv2d_bn(branch_1, 256, 3, 3, strides=(2,2), padding='valid')
+    branch_1 = conv2d_bn(input, 192, 1, 1, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 224, 3, 3, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 256, 3, 3, strides=(2,2), padding='valid', freeze=freeze)
 
     branch_2 = MaxPooling2D((3,3), strides=(2,2), padding='valid')(input)
 
@@ -78,44 +81,44 @@ def block_reduction_a(input):
     return x
 
 
-def block_inception_b(input):
+def block_inception_b(input, freeze=False):
     if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
-    branch_0 = conv2d_bn(input, 384, 1, 1)
+    branch_0 = conv2d_bn(input, 384, 1, 1, freeze=freeze)
 
-    branch_1 = conv2d_bn(input, 192, 1, 1)
-    branch_1 = conv2d_bn(branch_1, 224, 1, 7)
-    branch_1 = conv2d_bn(branch_1, 256, 7, 1)
+    branch_1 = conv2d_bn(input, 192, 1, 1, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 224, 1, 7, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 256, 7, 1, freeze=freeze)
 
-    branch_2 = conv2d_bn(input, 192, 1, 1)
-    branch_2 = conv2d_bn(branch_2, 192, 7, 1)
-    branch_2 = conv2d_bn(branch_2, 224, 1, 7)
-    branch_2 = conv2d_bn(branch_2, 224, 7, 1)
-    branch_2 = conv2d_bn(branch_2, 256, 1, 7)
+    branch_2 = conv2d_bn(input, 192, 1, 1, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 192, 7, 1, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 224, 1, 7, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 224, 7, 1, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 256, 1, 7, freeze=freeze)
 
     branch_3 = AveragePooling2D((3,3), strides=(1,1), padding='same')(input)
-    branch_3 = conv2d_bn(branch_3, 128, 1, 1)
+    branch_3 = conv2d_bn(branch_3, 128, 1, 1, freeze=freeze)
 
     x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
     return x
 
 
-def block_reduction_b(input):
+def block_reduction_b(input, freeze=False):
     if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
-    branch_0 = conv2d_bn(input, 192, 1, 1)
-    branch_0 = conv2d_bn(branch_0, 192, 3, 3, strides=(2, 2), padding='valid')
+    branch_0 = conv2d_bn(input, 192, 1, 1, freeze=freeze)
+    branch_0 = conv2d_bn(branch_0, 192, 3, 3, strides=(2, 2), padding='valid', freeze=freeze)
 
-    branch_1 = conv2d_bn(input, 256, 1, 1)
-    branch_1 = conv2d_bn(branch_1, 256, 1, 7)
-    branch_1 = conv2d_bn(branch_1, 320, 7, 1)
-    branch_1 = conv2d_bn(branch_1, 320, 3, 3, strides=(2,2), padding='valid')
+    branch_1 = conv2d_bn(input, 256, 1, 1, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 256, 1, 7, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 320, 7, 1, freeze=freeze)
+    branch_1 = conv2d_bn(branch_1, 320, 3, 3, strides=(2,2), padding='valid', freeze=freeze)
 
     branch_2 = MaxPooling2D((3, 3), strides=(2, 2), padding='valid')(input)
 
@@ -123,35 +126,35 @@ def block_reduction_b(input):
     return x
 
 
-def block_inception_c(input):
+def block_inception_c(input, freeze=False):
     if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
         channel_axis = -1
 
-    branch_0 = conv2d_bn(input, 256, 1, 1)
+    branch_0 = conv2d_bn(input, 256, 1, 1, freeze=freeze)
 
-    branch_1 = conv2d_bn(input, 384, 1, 1)
-    branch_10 = conv2d_bn(branch_1, 256, 1, 3)
-    branch_11 = conv2d_bn(branch_1, 256, 3, 1)
+    branch_1 = conv2d_bn(input, 384, 1, 1, freeze=freeze)
+    branch_10 = conv2d_bn(branch_1, 256, 1, 3, freeze=freeze)
+    branch_11 = conv2d_bn(branch_1, 256, 3, 1, freeze=freeze)
     branch_1 = concatenate([branch_10, branch_11], axis=channel_axis)
 
 
-    branch_2 = conv2d_bn(input, 384, 1, 1)
-    branch_2 = conv2d_bn(branch_2, 448, 3, 1)
-    branch_2 = conv2d_bn(branch_2, 512, 1, 3)
-    branch_20 = conv2d_bn(branch_2, 256, 1, 3)
-    branch_21 = conv2d_bn(branch_2, 256, 3, 1)
+    branch_2 = conv2d_bn(input, 384, 1, 1, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 448, 3, 1, freeze=freeze)
+    branch_2 = conv2d_bn(branch_2, 512, 1, 3, freeze=freeze)
+    branch_20 = conv2d_bn(branch_2, 256, 1, 3, freeze=freeze)
+    branch_21 = conv2d_bn(branch_2, 256, 3, 1, freeze=freeze)
     branch_2 = concatenate([branch_20, branch_21], axis=channel_axis)
 
     branch_3 = AveragePooling2D((3, 3), strides=(1, 1), padding='same')(input)
-    branch_3 = conv2d_bn(branch_3, 256, 1, 1)
+    branch_3 = conv2d_bn(branch_3, 256, 1, 1, freeze=freeze)
 
     x = concatenate([branch_0, branch_1, branch_2, branch_3], axis=channel_axis)
     return x
 
 
-def inception_v4_base(input):
+def inception_v4_base(input, freeze_level=None):
     if K.image_data_format() == 'channels_first':
         channel_axis = 1
     else:
@@ -185,31 +188,53 @@ def inception_v4_base(input):
 
     # 35 x 35 x 384
     # 4 x Inception-A blocks
-    for idx in range(4):
-    	net = block_inception_a(net)
 
     # 35 x 35 x 384
     # Reduction-A block
-    net = block_reduction_a(net)
+    if freeze_level and freeze_level <= 1:
+        for idx in range(4):
+            net = block_inception_a(net, freeze=True)
+
+        net = block_reduction_a(net, freeze=True)
+    else:
+        for idx in range(4):
+    	    net = block_inception_a(net)
+
+        net = block_reduction_a(net)
 
     # 17 x 17 x 1024
     # 7 x Inception-B blocks
-    for idx in range(7):
-    	net = block_inception_b(net)
 
     # 17 x 17 x 1024
     # Reduction-B block
-    net = block_reduction_b(net)
+    if freeze_level and freeze_level <=2:
+
+        for idx in range(7):
+    	    net = block_inception_b(net, freeze=True)
+
+        net = block_reduction_b(net, freeze=True)
+
+    else:
+        for idx in range(7):
+            net = block_inception_b(net)
+
+        net = block_reduction_b(net)
 
     # 8 x 8 x 1536
     # 3 x Inception-C blocks
-    for idx in range(3):
-    	net = block_inception_c(net)
+
+    if freeze_level and freeze_level <=3:
+
+        for idx in range(3):
+    	    net = block_inception_c(net, freeze=True)
+    else:
+        for idx in range(3):
+            net = block_inception_c(net)
 
     return net
 
 
-def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
+def inception_v4(num_classes, dropout_keep_prob, weights, include_top, freeze_level=None):
     '''
     Creates the inception v4 network
 
@@ -228,7 +253,7 @@ def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
         inputs = Input((299, 299, 3))
 
     # Make inception base
-    x = inception_v4_base(inputs)
+    x = inception_v4_base(inputs, freeze_level=freeze_level)
 
 
     # Final pooling and prediction
@@ -275,8 +300,13 @@ def inception_v4(num_classes, dropout_keep_prob, weights, include_top):
             			  'backend or you will get bad results!')
     return model, x, inputs
 
-def create_model(num_classes=1001, dropout_prob=0.2, weights='imagenet', include_top=True):
-    return inception_v4(num_classes, dropout_prob, weights, include_top)
+def create_model(num_classes=1001, dropout_prob=0.2, weights='imagenet', include_top=True, freeze_level=None, freeze_weights=False):
+    model = inception_v4(num_classes, dropout_prob, weights, include_top, freeze_level=freeze_level)
+    if freeze_weights:
+        for i in range(len(model.layers)):
+            if hasattr(model.layers[i], "trainable"):
+                model.layers[i].trainable = False
+    return model
 
 def create_top_model(inputs=None, weights=None):
     # input to top model is the activation after the last conv block of inception
@@ -290,7 +320,19 @@ def create_top_model(inputs=None, weights=None):
     if weights:
         top_model.load_weights(weights)
     return top_model,x,inputs
-       
+
+def create_model_with_weights(weights, freeze_level=None):
+    base, base_x, base_inputs= create_model(num_classes=500, weights=None, include_top=False, freeze_level=freeze_level)
+    print('Inceptionv4 Base loaded')
+
+    top, top_x, top_inputs = create_top_model()
+
+    # create the frozen model
+    defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
+    defrost_inceptionv4.load_weights(weights)
+
+    return defrost_inceptionv4
+
 def create_model_with_frozen_base():
     # get base model of inceptionv4
     # here x is the last layer of base, to be linked with top
@@ -307,17 +349,17 @@ def create_model_with_frozen_base():
     x = AveragePooling2D((8, 8), padding='valid')(x)
     x = Dropout(0.2)(x)
     x = Flatten()(x)
-    x = Dense(units=nb_classes, activation='softmax')(x)
+    x = Dense(units=500, activation='softmax')(x)
     
     # create the frozen model
     frozen_inceptionv4 = Model(input=inputs, output=x)
     
     return frozen_inceptionv4
 
-def create_defrost_model(top_weights):
+def create_defrost_model(top_weights, freeze_level=None):
     # get base model of inceptionv4
     # here x is the last layer of base, to be linked with top
-    base, base_x, base_inputs= create_model(num_classes=500, include_top=False, weights='imagenet')
+    base, base_x, base_inputs= create_model(num_classes=500, include_top=False, weights='imagenet', freeze_level=freeze_level)
 
     # Create top and link base to it
     top, top_x, top_inputs = create_top_model(weights=top_weights) 

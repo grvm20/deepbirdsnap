@@ -6,7 +6,7 @@ import utils
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import TensorBoard, ModelCheckpoint
-from inceptionv4 import create_defrost_model
+from inceptionv4 import create_defrost_model,create_model_with_weights 
 import pandas
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
@@ -78,7 +78,7 @@ def defrost_train():
     checkpoint_callback = ModelCheckpoint('./models/defrost_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 
     # load top model architecture
-    defrost_model = create_defrost_model('top_model_weights_best.hdf5', freeze_level=2)
+    defrost_model = create_model_with_weights('best_weights/defrost_weights_train_c_loaded_fc.hdf5', freeze_level=2)
     
     defrost_model.compile(optimizer=optimizers.Adam(lr=1e-5), #tried 6 zeros
         loss='categorical_crossentropy', metrics=['accuracy'])
