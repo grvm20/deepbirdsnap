@@ -6,11 +6,12 @@ import utils
 import numpy as np
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import TensorBoard, ModelCheckpoint
-from inceptionv4 import create_defrost_model,create_model_with_weights 
+from inceptionv4 import create_model 
 import pandas
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras import optimizers
+from keras import metrics
 
 batch_size = 8
 nb_classes = 500
@@ -56,8 +57,9 @@ def defrost_train():
 
     test_datagen = ImageDataGenerator(rescale=1./255)
 
-    nb_epoch = 5
+    nb_epoch = 6
     batch_size = 8
+    exp_name = 'defrost_c'
     
     train_generator = train_datagen.flow_from_directory(
     train_data_dir,
@@ -74,22 +76,17 @@ def defrost_train():
     target_size=(img_width, img_height),
     batch_size=batch_size)
 
-    tensorboard_callback = TensorBoard(log_dir='./logs/defrost/', histogram_freq=0, write_graph=True, write_images=False)
-    checkpoint_callback = ModelCheckpoint('./models/defrost_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
+    tensorboard_callback = TensorBoard(log_dir='./logs/'+exp_name+'/', histogram_freq=0, write_graph=True, write_images=False)
+    checkpoint_callback = ModelCheckpoint('./models/'+exp_name+'_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 
     # load top model architecture
-    defrost_model = create_model_with_weights('best_weights/defrost_weights_train_c_loaded_fc.hdf5', freeze_level=1)
-
+    defrost_model = create_model(freeze_level=2, top_weights='best_weights/top_model_weights_best_47.hdf5')
+    
+    
     defrost_model.compile(optimizer=optimizers.Adam(lr=1e-5), #tried 6 zeros
-        loss='categorical_crossentropy', metrics=['accuracy'])
-    """
-    history_model = defrost_model.fit(train_data, train_labels,
-              epochs=epochs,
-              batch_size=batch_size,
-              verbose=1,
-              validation_data=(validation_data, validation_labels),
-              callbacks = [tensorboard_callback, checkpoint_callback])
-    """
+        loss='categorical_crossentropy', metrics=['accuracy', metrics.top_k_categorical_accuracy])
+    print(defrost_model.summary())
+    
     hist_model = defrost_model.fit_generator(
         train_generator,
         nb_train_samples//batch_size,
@@ -100,12 +97,13 @@ def defrost_train():
         initial_epoch = 0,
         callbacks=[tensorboard_callback, checkpoint_callback]
     )
-
-    pandas.DataFrame(hist_model.history).to_csv('./history/defrost_model.csv')
     
+    pandas.DataFrame(hist_model.history).to_csv('./history/'+exp_name+'_model.csv')
+     
     #ev_validation = defrost_model.evaluate_generator(validation_generator,nb_validation_samples//batch_size)
     #print(ev_validation)
     #ev_test = defrost_model.evaluate(test_data,test_labels, batch_size=batch_size, verbose=1)
     #print(ev_test)
+
 defrost_train()
 gc.collect()

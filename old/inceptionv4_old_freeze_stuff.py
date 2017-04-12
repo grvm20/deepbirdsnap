@@ -301,7 +301,7 @@ def inception_v4(num_classes=500, dropout_keep_prob=0.2, weights='imagenet', inc
                 cache_subdir='models',
                 md5_hash='9296b46b5971573064d12e4669110969')
         model.load_weights(weights_path, by_name=True)
-        print('Base weights loaded.')
+        print('Loaded weights')
         if K.backend() == 'theano':
             warnings.warn('The Theano backend is not currently supported for '
             			  'this model on Keras 2. Please use the TensorFlow  '
@@ -346,8 +346,7 @@ def create_model(weights=None, freeze_level=None, top_weights=None):
     Weights:
         path to weight file
     freeze_level (defrost means trainable):
-        None [default] = freeze nothing, whole network is trainable
-        0 = freeze stem
+        None or 0 = freeze only stem
         1 = freeze stem and A block
         2 = freeze stem and A, B blocks
         3 = freeze stem and A, B, C blocks

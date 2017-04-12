@@ -1,0 +1,23 @@
+Epoch 1/5
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3870 get requests, put_count=2986 evicted_count=1000 eviction_rate=0.334896 and unsatisfied allocation rate=0.512661
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+   5/5290 [..............................] - ETA: 13430s - loss: 0.5640 - acc: 0.8500I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+  11/5290 [..............................] - ETA: 8610s - loss: 0.5224 - acc: 0.8750I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 237 get requests, put_count=1128 evicted_count=1000 eviction_rate=0.886525 and unsatisfied allocation rate=0.578059
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+  17/5290 [..............................] - ETA: 7198s - loss: 0.5545 - acc: 0.8456I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3917 get requests, put_count=3620 evicted_count=1000 eviction_rate=0.276243 and unsatisfied allocation rate=0.347715
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 720 to 792
+  38/5290 [..............................] - ETA: 5764s - loss: 0.6277 - acc: 0.8125I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 31549 get requests, put_count=31620 evicted_count=1000 eviction_rate=0.0316256 and unsatisfied allocation rate=0.034803
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1863 to 2049
+5290/5290 [==============================] - 5387s - loss: 0.6262 - acc: 0.8215 - val_loss: 1.7216 - val_acc: 0.6167
+Epoch 2/5
+5290/5290 [==============================] - 5788s - loss: 0.4815 - acc: 0.8658 - val_loss: 1.7686 - val_acc: 0.6187
+Epoch 3/5
+5290/5290 [==============================] - 5451s - loss: 0.3725 - acc: 0.9001 - val_loss: 2.0131 - val_acc: 0.6070
+Epoch 4/5
+5290/5290 [==============================] - 5738s - loss: 0.2992 - acc: 0.9232 - val_loss: 2.0456 - val_acc: 0.6130
+Epoch 5/5
+5290/5290 [==============================] - 6386s - loss: 0.2348 - acc: 0.9421 - val_loss: 1.8476 - val_acc: 0.6143
+Exception ignored in: <bound method BaseSession.__del__ of <tensorflow.python.client.session.Session object at 0x7fab2fded550>>
+Traceback (most recent call last):
+  File "/home/ubuntu/birdsnap_dataset/deepbirdsnap/newbirds/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 582, in __del__
+AttributeError: 'NoneType' object has no attribute 'TF_DeleteStatus'
