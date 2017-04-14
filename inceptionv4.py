@@ -39,8 +39,10 @@ def conv2d_bn(x, nb_filter, num_row, num_col,
                       padding=padding,
                       use_bias=use_bias,
                       trainable=t)(x)
-    
-    x = BatchNormalization(axis=channel_axis, scale=False)(x)
+    if t:
+        x = BatchNormalization(axis=channel_axis, scale=False)(x)
+    else:
+        x = BatchNormalization(axis=channel_axis, scale=False, trainable=False)(x)
     x = Activation('relu')(x)
     return x
 
