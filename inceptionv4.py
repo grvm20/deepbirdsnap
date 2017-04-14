@@ -164,7 +164,7 @@ def inception_v4_base(input, freeze_level=None):
         channel_axis = -1
     
     freeze_stem = False
-    if freeze_level and freeze_level >= 0:
+    if freeze_level is not None and freeze_level >= 0:
         freeze_stem = True
 
     # Input Shape is 299 x 299 x 3 (th) or 3 x 299 x 299 (th)
@@ -198,7 +198,7 @@ def inception_v4_base(input, freeze_level=None):
 
     # 35 x 35 x 384
     # Reduction-A block
-    if freeze_level and freeze_level >= 1:
+    if freeze_level is not None and freeze_level >= 1:
         # create frozen A block
         for idx in range(4):
             net = block_inception_a(net, freeze=True)
@@ -214,7 +214,7 @@ def inception_v4_base(input, freeze_level=None):
 
     # 17 x 17 x 1024
     # Reduction-B block
-    if freeze_level and freeze_level >=2:
+    if freeze_level is not None and freeze_level >=2:
         # create frozen B block
         for idx in range(7):
     	    net = block_inception_b(net, freeze=True)
@@ -227,7 +227,7 @@ def inception_v4_base(input, freeze_level=None):
 
     # 8 x 8 x 1536
     # 3 x Inception-C blocks
-    if freeze_level and freeze_level>=3:
+    if freeze_level is not None and freeze_level>=3:
         # create frozen B block
         for idx in range(3):
     	    net = block_inception_c(net, freeze=True)
