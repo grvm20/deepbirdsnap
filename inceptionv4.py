@@ -324,7 +324,7 @@ def inception_v4(num_classes=500, dropout_keep_prob=0.2, weights='imagenet', inc
 #                model.layers[i].trainable = False
 #    return model
 
-def create_top_model(inputs=None, weights=None):
+def create_top_model(inputs=None, weights=None, num_classes=500, activation='softmax'):
     """
     Create top model as defined by the Inceptionv4 architecture. 
     Loads weights if top weights file path is specified
@@ -335,14 +335,16 @@ def create_top_model(inputs=None, weights=None):
     x = AveragePooling2D((8, 8), padding='valid')(inputs)
     x = Dropout(0.2)(x)
     x = Flatten()(x)
-    x = Dense(units=500, activation='softmax')(x)
+    if activation != 'softmax':
+        raise NotImplementedError
+    x = Dense(units=num_classes, activation=activation)(x)
     top_model = Model(input=inputs, output=x)
     if weights: 
         top_model.load_weights(weights)
         print('Loaded top model weights')
     return top_model,x,inputs
 
-def create_model(weights=None, freeze_level=None, top_weights=None):
+def create_model(weights=None, num_classes=500, freeze_level=None, top_weights=None, include_top=True):
     """
     Create model with our 500 class top model. 
     Weights:
@@ -356,18 +358,22 @@ def create_model(weights=None, freeze_level=None, top_weights=None):
     """
     
     # get the base (inceptionv4 without top FC layers)
-    base, base_x, base_inputs = inception_v4(num_classes=500, weights='imagenet', include_top=False, freeze_level=freeze_level)
+    base, base_x, base_inputs = inception_v4(num_classes=num_classes, weights=weights, include_top=False, freeze_level=freeze_level)
     print('Inceptionv4 Base loaded')
 
-    top, top_x, top_inputs = create_top_model(weights=top_weights)
+    top, top_x, top_inputs = create_top_model(weights=top_weights, num_classes=num_classes)
 
     # create the top+base model
     defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
     
     # load weights if provided
-    if weights:
+    if weights and weights != 'imagenet':
         defrost_inceptionv4.load_weights(weights)
         print('Weights loaded')
+
+    if not include_top:
+        base_model = defrost_inceptionv4.layers[-2]
+        return base_model
 
     return defrost_inceptionv4
 
