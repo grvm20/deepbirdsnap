@@ -335,8 +335,6 @@ def create_top_model(inputs=None, weights=None, num_classes=500, activation='sof
     x = AveragePooling2D((8, 8), padding='valid')(inputs)
     x = Dropout(0.2)(x)
     x = Flatten()(x)
-    if activation != 'softmax':
-        raise NotImplementedError
     x = Dense(units=num_classes, activation=activation)(x)
     top_model = Model(input=inputs, output=x)
     if weights: 

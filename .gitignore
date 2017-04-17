@@ -1,3 +1,4 @@
+.ipynb_checkpoints/
 __pycache__
 *.pyc
 *.npy
@@ -7,5 +8,6 @@ models/
 newbirds/
 birds/
 best_weights/
+cache/
 parts_info.txt
 parts_info_small.txt

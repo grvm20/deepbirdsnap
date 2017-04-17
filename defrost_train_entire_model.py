@@ -59,7 +59,7 @@ def defrost_train():
 
     nb_epoch = 6
     batch_size = 8
-    exp_name = 'defrost_c'
+    exp_name = 'defrost_everything_init_47_freeze_fixed'
     
     train_generator = train_datagen.flow_from_directory(
     train_data_dir,
@@ -80,8 +80,7 @@ def defrost_train():
     checkpoint_callback = ModelCheckpoint('./models/'+exp_name+'_weights.{epoch:02d}-{val_acc:.2f}.hdf5', monitor='val_acc', verbose=0, save_best_only=True, save_weights_only=False, mode='auto')
 
     # load top model architecture
-    defrost_model = create_model(freeze_level=2, top_weights='best_weights/top_model_weights_best_47.hdf5')
-    
+    defrost_model = create_model(freeze_level=None, top_weights='best_weights/top_model_weights_best_47.hdf5')
     
     defrost_model.compile(optimizer=optimizers.Adam(lr=1e-5), #tried 6 zeros
         loss='categorical_crossentropy', metrics=['accuracy', metrics.top_k_categorical_accuracy])

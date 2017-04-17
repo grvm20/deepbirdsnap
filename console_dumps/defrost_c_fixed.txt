@@ -1,0 +1,20 @@
+Epoch 1/6
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3854 get requests, put_count=2980 evicted_count=1000 eviction_rate=0.33557 and unsatisfied allocation rate=0.512195
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+   5/5290 [..............................] - ETA: 11349s - loss: 4.2611 - acc: 0.1500 - top_k_categorical_accuracy: 0.4000I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+  11/5290 [..............................] - ETA: 7084s - loss: 4.3120 - acc: 0.1477 - top_k_categorical_accuracy: 0.4659I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3867 get requests, put_count=3096 evicted_count=1000 eviction_rate=0.322997 and unsatisfied allocation rate=0.465219
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+  17/5290 [..............................] - ETA: 5830s - loss: 4.0024 - acc: 0.2059 - top_k_categorical_accuracy: 0.5000I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3885 get requests, put_count=3386 evicted_count=1000 eviction_rate=0.295334 and unsatisfied allocation rate=0.398456
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 542 to 596
+  25/5290 [..............................] - ETA: 5097s - loss: 4.1333 - acc: 0.2150 - top_k_categorical_accuracy: 0.4850I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3943 get requests, put_count=4158 evicted_count=1000 eviction_rate=0.2405 and unsatisfied allocation rate=0.225716
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1158 to 1273
+5290/5290 [==============================] - 4444s - loss: 2.5710 - acc: 0.3957 - top_k_categorical_accuracy: 0.6860 - val_loss: 3.5210 - val_acc: 0.4187 - val_top_k_categorical_accuracy: 0.6817
+Epoch 2/6
+5290/5290 [==============================] - 4466s - loss: 1.9836 - acc: 0.4926 - top_k_categorical_accuracy: 0.7823 - val_loss: 3.4560 - val_acc: 0.4563 - val_top_k_categorical_accuracy: 0.7403
+Epoch 3/6
+ 809/5290 [===>..........................] - ETA: 3690s - loss: 1.7309 - acc: 0.5482 - top_k_categorical_accuracy: 0.8180.......................] - ETA: 3704s - loss: 1.7331 - acc: 0.5473 - top_k_categorical_ac
+curacy: 0.8177^[[3~[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B^[[B
+ 811/5290 [===>..........................] - ETA: 3689s - loss: 1.7315 - acc: 0.5479 - top_k_categorical_accuracy: 0.8180
+
+2271/5290 [===========>..................] - ETA: 2385s - loss: 1.7371 - acc: 0.5456 - top_k_categorical_accuracy: 0.8183
+

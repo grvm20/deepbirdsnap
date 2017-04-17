@@ -1,0 +1,36 @@
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         (None, 299, 299, 3)       0
+_________________________________________________________________
+inception_v4 (Model)         (None, 8, 8, 1536)        41174400
+_________________________________________________________________
+model_1 (Model)              (None, 500)               768500
+=================================================================
+Total params: 41,942,900.0
+Trainable params: 41,879,732.0
+Non-trainable params: 63,168.0
+_________________________________________________________________
+None
+Epoch 1/6
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3870 get requests, put_count=2986 evicted_count=1000 eviction_rate=0.334896 and unsatisfied allocation rate=0.512661
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+   5/5290 [..............................] - ETA: 14109s - loss: 3.1369 - acc: 0.3500 - top_k_categorical_accuracy: 0.6000I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+  11/5290 [..............................] - ETA: 8980s - loss: 3.8750 - acc: 0.3182 - top_k_categorical_accuracy: 0.5114I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 237 get requests, put_count=1128 evicted_count=1000 eviction_rate=0.886525 and unsatisfied allocation rate=0.578059
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+  17/5290 [..............................] - ETA: 7462s - loss: 4.0795 - acc: 0.2868 - top_k_categorical_accuracy: 0.5294I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3917 get requests, put_count=3620 evicted_count=1000 eviction_rate=0.276243 and unsatisfied allocation rate=0.347715
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 720 to 792
+  38/5290 [..............................] - ETA: 5918s - loss: 4.0860 - acc: 0.2664 - top_k_categorical_accuracy: 0.5263I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 31549 get requests, put_count=31620 evicted_count=1000 eviction_rate=0.0316256 and unsatisfied allocation rate=0.034803
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1863 to 2049
+5290/5290 [==============================] - 5035s - loss: 2.0118 - acc: 0.4923 - top_k_categorical_accuracy: 0.7811 - val_loss: 2.9695 - val_acc: 0.5057 - val_top_k_categorical_accuracy: 0.7503
+Epoch 2/6
+5290/5290 [==============================] - 5020s - loss: 1.3664 - acc: 0.6244 - top_k_categorical_accuracy: 0.8813 - val_loss: 2.6580 - val_acc: 0.5367 - val_top_k_categorical_accuracy: 0.7803
+Epoch 3/6
+5290/5290 [==============================] - 5026s - loss: 1.0366 - acc: 0.7060 - top_k_categorical_accuracy: 0.9285 - val_loss: 1.9691 - val_acc: 0.5770 - val_top_k_categorical_accuracy: 0.8207
+Epoch 4/6
+5290/5290 [==============================] - 5024s - loss: 0.8069 - acc: 0.7700 - top_k_categorical_accuracy: 0.9541 - val_loss: 1.9077 - val_acc: 0.5993 - val_top_k_categorical_accuracy: 0.8337
+Epoch 5/6
+5290/5290 [==============================] - 5017s - loss: 0.6304 - acc: 0.8224 - top_k_categorical_accuracy: 0.9725 - val_loss: 2.1814 - val_acc: 0.5863 - val_top_k_categorical_accuracy: 0.8193
+Epoch 6/6
+5290/5290 [==============================] - 5018s - loss: 0.4969 - acc: 0.8608 - top_k_categorical_accuracy: 0.9823 - val_loss: 2.0380 - val_acc: 0.5897 - val_top_k_categorical_accuracy: 0.8267
+

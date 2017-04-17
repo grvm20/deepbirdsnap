@@ -1,0 +1,5 @@
+Epoch: 1, train_l: 57.6113, train_a: 0.4441, val_l: 35.8213, val_a: 0.0000, time: 29.9714
+Epoch: 2, train_l: 56.5254, train_a: 0.3640, val_l: 35.7590, val_a: 1.0000, time: 29.6587
+Epoch: 3, train_l: 55.9091, train_a: 0.5553, val_l: 35.9171, val_a: 1.0000, time: 29.6307
+Epoch: 4, train_l: 55.3983, train_a: 0.5556, val_l: 36.1005, val_a: 1.0000, time: 30.1231
+Epoch: 5, train_l: 54.9647, train_a: 0.5556, val_l: 36.0448, val_a: 1.0000, time: 29.6351
