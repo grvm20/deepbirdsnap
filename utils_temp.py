@@ -23,7 +23,7 @@ def get_img_array(path, target_dim=(299,299)):
     return img_to_array(load_img(path, target_size=target_dim))/255.0
 
 
-def img_parts_generator(parts_filename, data_dir, batch_size=10):
+def img_parts_generator(parts_filename, data_dir, batch_size=10, bottleneck_file=None, unpickled=None, load_image=False):
     """
     Get image, parts arrays for given directory of images
     example of data dir: train/
@@ -31,11 +31,13 @@ def img_parts_generator(parts_filename, data_dir, batch_size=10):
     # check if cahced features exist
     cache_path = 'cache/parts_'+data_dir[:-1]+'.p'
     data_dir = '../'+ data_dir
-    if isfile(cache_path):
+    if unpickled:
+        features = unpickled['features']
+        count = unpickled['count']  
+    elif isfile(cache_path):
         unpickled = pickle.load(open(cache_path,'rb'))
         features = unpickled['features']
-        count = unpickled['count']
-    
+        count = unpickled['count']    
     else:
         # load parts data from file
         with open(parts_filename,'r') as f:
@@ -85,27 +87,39 @@ def img_parts_generator(parts_filename, data_dir, batch_size=10):
 
     # get actual img and parts
     print('Images found in '+ data_dir +': '+ str(count))
-    
-    # get files in data_dir
+   # get files in data_dir
     filenames = [file for file in glob.glob(data_dir+'*/*', recursive=True)]
     filenames.sort()
     i = 0
     num_files = len(filenames)
+    if bottleneck_file is not None:
+        bottleneck = np.load(open(bottleneck_file,'rb'))
     while i < num_files:
         img = filenames[i]
         data_img = []
         data_parts = []
+        data_bottleneck = []
         for j in range(batch_size):
             y = features[img]
-            x = get_img_array(img)
-            data_img.append(x)
+            if bottleneck_file:
+                data_bottleneck.append(bottleneck[i])
+            if load_image:
+                x = get_img_array(img)
+                data_img.append(x)
             data_parts.append(y)
             i += 1
             if i>= num_files:
                 break
-        data_img, data_parts = np.asarray(data_img), np.array(data_parts)
+        data_img, data_parts, data_bottleneck = np.asarray(data_img), np.array(data_parts), np.array(data_bottleneck)
         #print(data_img.shape)
-        yield data_img, data_parts
+        if bottleneck_file and load_image:
+            yield data_bottleneck, data_parts, data_img
+        elif load_image:
+            yield data_img, data_parts
+        elif bottleneck_file:
+            yield data_bottleneck, data_parts
+        else:
+            yield data_parts
 def get_labels_from_dir():
     """
     Get subdirs in a dir
