@@ -1,11 +1,12 @@
 """
 Load model and evaluate it's performance on test set
+Provides option to return a batch of predictions for testing
 """
 import gc
 import utils_temp as utils
 import numpy as np
 from keras.callbacks import TensorBoard, ModelCheckpoint
-from inceptionv4 import create_top_model
+from inceptionv4 import create_model
 import pandas
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
@@ -29,32 +30,32 @@ epochs = 3
 exp_name = 'top_model_parts'
 def evaluate(get_labels=0):
     # load top model architecture
-    top_model, _, _ = create_top_model(num_classes=38, weights='best_weights/top_model_parts.hdf5', activation=None) 
+    top_model = create_model(num_classes=38, weights='best_weights/defrost_all_parts.hdf5', activation=None) 
     top_model.compile(optimizer=optimizers.Adam(),
                 loss='mean_absolute_error', metrics=['accuracy'])
 
     # load pickled parts info
-    unpickled_test = pickle.load(open('cache/parts_test.p','rb'))
+    unpickled_test = pickle.load(open('cache/parts_validation.p','rb'))
 
     time_start = time.time()
     if get_labels:
-        test_generator = utils.img_parts_generator(part_file_name, test_data_dir, batch_size=get_labels, bottleneck_file='bottleneck/bottleneck_60_test.npy', unpickled=unpickled_test, load_image=True)
+        test_generator = utils.img_parts_generator(part_file_name, validation_data_dir, batch_size=get_labels, unpickled=unpickled_test, load_image=True)
     else:
-        test_generator = utils.img_parts_generator(part_file_name, test_data_dir, batch_size=4500, bottleneck_file='bottleneck/bottleneck_60_test.npy', unpickled=unpickled_test, load_image=False)
+        test_generator = utils.img_parts_generator(part_file_name, validation_data_dir, batch_size=4500, unpickled=unpickled_test, load_image=True)
     if get_labels: 
         x = []
         y = []
         y_pred = []
         j = 0
-        for inp, label, img in test_generator:
+        for inp, label in test_generator:
             
             preds = top_model.predict_on_batch(inp)
             if not x:
-                x = img
+                x = inp
                 y = label
                 y_pred = preds
             else:
-                x = np.concatenate((x,img))
+                x = np.concatenate((x,inp))
                 y = np.concatenate((y,label))
                 y_pred = np.concatenate((y_pred,preds))
             j+=1

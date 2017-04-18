@@ -315,15 +315,6 @@ def inception_v4(num_classes=500, dropout_keep_prob=0.2, weights='imagenet', inc
 # Below are our functions#
 ##########################
 
-
-#def create_model(num_classes=1001, dropout_prob=0.2, weights='imagenet', include_top=True, freeze_level=None, freeze_weights=False):
-#    model = inception_v4(num_classes, dropout_prob, weights, include_top, freeze_level=freeze_level)
-#    if freeze_weights:
-#        for i in range(len(model.layers)):
-#            if hasattr(model.layers[i], "trainable"):
-#                model.layers[i].trainable = False
-#    return model
-
 def create_top_model(inputs=None, weights=None, num_classes=500, activation='softmax'):
     """
     Create top model as defined by the Inceptionv4 architecture. 
@@ -342,7 +333,7 @@ def create_top_model(inputs=None, weights=None, num_classes=500, activation='sof
         print('Loaded top model weights')
     return top_model,x,inputs
 
-def create_model(weights=None, num_classes=500, freeze_level=None, top_weights=None, include_top=True):
+def create_model(weights=None, weights_output_dim=None, num_classes=500, freeze_level=None, top_weights=None, include_top=True, activation='softmax'):
     """
     Create model with our 500 class top model. 
     Weights:
@@ -353,21 +344,42 @@ def create_model(weights=None, num_classes=500, freeze_level=None, top_weights=N
         1 = freeze stem and A block
         2 = freeze stem and A, B blocks
         3 = freeze stem and A, B, C blocks
+    include_top:
+        if False, returns the base inceptionv4 model without FC layers
+    top_weights:
+        weights to load into top model
+    activation: 
+        activation function applied to output
     """
-    
     # get the base (inceptionv4 without top FC layers)
-    base, base_x, base_inputs = inception_v4(num_classes=num_classes, weights=weights, include_top=False, freeze_level=freeze_level)
+    base, base_x, base_inputs = inception_v4(weights=weights, include_top=False, freeze_level=freeze_level)
     print('Inceptionv4 Base loaded')
-
-    top, top_x, top_inputs = create_top_model(weights=top_weights, num_classes=num_classes)
+    
+    if weights_output_dim: 
+        # placeholder top model so that weights can be loaded to base
+        top, top_x, top_inputs = create_top_model(num_classes=weights_output_dim, activation=activation)
+    else:
+        # this will be the actual top model that will be attached to returned model
+        top, top_x, top_inputs = create_top_model(weights=top_weights, num_classes=num_classes, activation=activation)
 
     # create the top+base model
-    defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
+    defrost_inceptionv4 = fuse(base_inputs,base,top)
     
-    # load weights if provided
+    # load weights if provided to base model (+ top) 
     if weights and weights != 'imagenet':
         defrost_inceptionv4.load_weights(weights)
         print('Weights loaded')
+    
+    #print(defrost_inceptionv4.layers[-2].kernel)
+
+    if weights_output_dim is not None: # create actual top and fuse with loaded base
+        # create actual top model and load top_weights into it
+        top, top_x, top_inputs = create_top_model(weights=top_weights, num_classes=num_classes, activation=activation)
+        # get base model of the model with loaded weights that we have till now
+        base = defrost_inceptionv4.layers[-2]
+        #fuse base model with actual top model
+        defrost_inceptionv4 = fuse(base_inputs,base,top)
+        return defrost_inceptionv4
 
     if not include_top:
         base_model = defrost_inceptionv4.layers[-2]
@@ -375,46 +387,9 @@ def create_model(weights=None, num_classes=500, freeze_level=None, top_weights=N
 
     return defrost_inceptionv4
 
-"""
-Use create_defrost_model() instead of this
-def create_model_with_frozen_base():
-    # get base model of inceptionv4
-    # here x is the last layer of base, to be linked with top
-    inceptionv4_base, x, inputs= create_model(num_classes=500, include_top=False, weights='imagenet')
-    print('Inceptionv4 Base loaded')
-
-    ## Freezing all layers of inceptionv4 base
-    for i in range(len(inceptionv4_base.layers)):
-        if hasattr(inceptionv4_base.layers[i], 'trainable'):
-            inceptionv4_base.layers[i].trainable = False
-    print('Froze weights')
-
-    # Create top and link base to it
-    x = AveragePooling2D((8, 8), padding='valid')(x)
-    x = Dropout(0.2)(x)
-    x = Flatten()(x)
-    x = Dense(units=500, activation='softmax')(x)
-    
-    # create the frozen model
-    frozen_inceptionv4 = Model(input=inputs, output=x)
-    
-    return frozen_inceptionv4
-
-
-def create_defrost_model(top_weights, freeze_level=None):
-    # get base model of inceptionv4
-    # here x is the last layer of base, to be linked with top
-    base, base_x, base_inputs= create_model(num_classes=500, include_top=False, weights='imagenet', freeze_level=freeze_level)
-
-    # Create top and link base to it
-    top, top_x, top_inputs = create_top_model(weights=top_weights) 
-
-    # create the model to defrost
-    #inputs = Input((299,299,3))
-    defrost_inceptionv4 = Model(input=base_inputs, output=top(base(base_inputs)))
-    
-    return defrost_inceptionv4
-"""
+def fuse(base_inputs, base, top):
+    fused = Model(input=base_inputs, output=top(base(base_inputs)))
+    return fused
 
 def test_freeze():
     """

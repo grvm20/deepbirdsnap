@@ -23,19 +23,39 @@ def get_img_array(path, target_dim=(299,299)):
     return img_to_array(load_img(path, target_size=target_dim))/255.0
 
 
-def img_parts_generator(parts_filename, data_dir, batch_size=10):
+def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, steps=None, target_dim=(299,299), bottleneck_file=None, unpickled=None, load_image=False, load_paths=False):
     """
     Get image, parts arrays for given directory of images
     example of data dir: train/
+    Unpickled:
+        Pickled file path. 
+        Load part features from pickled file.
+        Use this over cache. 
+    Cache: 
+        True/False. 
+        Load part features from cached file.
+    Target dim: 
+        scale the image to provided dim
+        no scaling if None
+    Batch size:
+        images per batch
+    Steps: 
+        number of batches to yield
+        yield all if None
+    load_paths:
+        True/False
+        Return img path, part data if True
     """
     # check if cahced features exist
     cache_path = 'cache/parts_'+data_dir[:-1]+'.p'
     data_dir = '../'+ data_dir
-    if isfile(cache_path):
+    if unpickled:
+        features = unpickled['features']
+        count = unpickled['count']  
+    elif cache and isfile(cache_path):
         unpickled = pickle.load(open(cache_path,'rb'))
         features = unpickled['features']
-        count = unpickled['count']
-    
+        count = unpickled['count']    
     else:
         # load parts data from file
         with open(parts_filename,'r') as f:
@@ -71,8 +91,13 @@ def img_parts_generator(parts_filename, data_dir, batch_size=10):
                     field1 = int(field1)
                     field2 = int(field2)
                 point = (field1, field2)
+                
                 # scale the point to target img dim
-                scaled_feature = scale(point,orig_dim)
+                if target_dim:
+                    scaled_feature = scale(point,orig_dim,target_dim=target_dim)
+                else:
+                    scaled_feature = point
+                
                 row.append(scaled_feature[0])
                 row.append(scaled_feature[1])
                 i += 2
@@ -85,27 +110,56 @@ def img_parts_generator(parts_filename, data_dir, batch_size=10):
 
     # get actual img and parts
     print('Images found in '+ data_dir +': '+ str(count))
-    
-    # get files in data_dir
+   # get files in data_dir
     filenames = [file for file in glob.glob(data_dir+'*/*', recursive=True)]
     filenames.sort()
     i = 0
     num_files = len(filenames)
+    if bottleneck_file is not None:
+        bottleneck = np.load(open(bottleneck_file,'rb'))
+    batch_count = 0
     while i < num_files:
-        img = filenames[i]
+        
+        if batch_count == steps:
+            break
+        
         data_img = []
         data_parts = []
+        data_bottleneck = []
+        data_paths = []
         for j in range(batch_size):
-            y = features[img]
-            x = get_img_array(img)
-            data_img.append(x)
-            data_parts.append(y)
-            i += 1
-            if i>= num_files:
+            if i+j>= num_files:
                 break
-        data_img, data_parts = np.asarray(data_img), np.array(data_parts)
+            img = filenames[i+j]
+            y = features[img]
+            if bottleneck_file:
+                data_bottleneck.append(bottleneck[i+j])
+            if load_image:
+                x = get_img_array(img, target_dim=target_dim)
+                data_img.append(x)
+            if load_paths:
+                data_paths.append(img)
+            data_parts.append(y)
+        i += batch_size
+        batch_count += 1
+        data_img, data_parts, data_bottleneck = np.asarray(data_img), np.array(data_parts), np.array(data_bottleneck)
         #print(data_img.shape)
-        yield data_img, data_parts
+        if bottleneck_file and load_image and load_paths:
+            yield data_bottleneck, data_parts, data_img, data_paths
+        elif bottleneck_file and load_image:
+            yield data_bottleneck, data_parts, data_img
+        elif bottleneck_file and load_paths:
+            yield data_bottleneck, data_parts, data_paths
+        elif load_image and load_paths:
+            yield data_img, data_parts, data_paths
+        elif load_image:
+            yield data_img, data_parts
+        elif bottleneck_file:
+            yield data_bottleneck, data_parts
+        elif load_paths:
+            yield data_paths, data_parts
+        else:
+            yield data_parts
 def get_labels_from_dir():
     """
     Get subdirs in a dir

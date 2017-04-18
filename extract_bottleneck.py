@@ -8,7 +8,7 @@ import numpy as np
 from keras.layers import Dropout, Flatten, Dense
 from keras import applications
 from inceptionv4 import create_model
-from utils import img_parts_generator
+from utils_temp import img_parts_generator
 from progress.bar import Bar
 
 img_width, img_height = 299, 299
@@ -36,7 +36,7 @@ def save_bottleneck_features():
 
     for path,num in zip(['train_vsmall', 'validation', 'train', 'test'], [30,3000,42320,4500]):
         print('Saving '+path+' bottlenecks')
-        generator = img_parts_generator('parts_info.txt', data_dir=path+'/', batch_size=batch_size)
+        generator = img_parts_generator('parts_info.txt', data_dir=path+'/', batch_size=batch_size, load_image=True)
         bottlenecks = None
         count = 0
         bar = Bar('Extracting ' + path, max = num//batch_size)
