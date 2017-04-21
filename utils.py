@@ -22,11 +22,21 @@ def get_img_array(path, target_dim=(299,299)):
     """
     return img_to_array(load_img(path, target_size=target_dim))/255.0
 
+def load_bottlenecks(filename):
+    print('Loading bottlenecks from {}...'.format(filename))
+    bottlenecks = np.load(open(filename,'rb'))
+    return bottlenecks
 
-def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, steps=None, target_dim=(299,299), bottleneck_file=None, unpickled=None, load_image=False, load_paths=False):
+def img_parts_generator(parts_filename, data_dir, 
+        cache=True,batch_size=10, steps=None, target_dim=(299,299), 
+        bottlenecks=None, unpickled=None, load_image=False, 
+        load_paths=False, bb_only=False):
     """
-    Get image, parts arrays for given directory of images
-    example of data dir: train/
+    Return batches of (numpy image, bird parts features) for given directory
+    parts_filename: 
+        tab separated text file containing 42 columns of info on each row
+    data_dir:
+        Source directory of images, example: train/
     Unpickled:
         Pickled file path. 
         Load part features from pickled file.
@@ -45,17 +55,25 @@ def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, step
     load_paths:
         True/False
         Return img path, part data if True
+    bb_only: 
+        True/False
+        Return only bounding box as feature
     """
     # check if cahced features exist
-    cache_path = 'cache/parts_'+data_dir[:-1]+'.p'
+    if bb_only:
+        cache_prefix = 'bb_'
+    else:
+        cache_prefix = 'parts_'
+    cache_path = 'cache/'+cache_prefix+data_dir[:-1]+'.p'
     data_dir = '../'+ data_dir
     if unpickled:
         features = unpickled['features']
         count = unpickled['count']  
     elif cache and isfile(cache_path):
+        print('Loaded cached features from '+cache_path)
         unpickled = pickle.load(open(cache_path,'rb'))
         features = unpickled['features']
-        count = unpickled['count']    
+        count = unpickled['count']
     else:
         # load parts data from file
         with open(parts_filename,'r') as f:
@@ -79,7 +97,13 @@ def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, step
 
             row = []
             i = 4 # bounding box and other part info starts from column index 4
-            while i<42: # 42 columns in parts text file
+            featue_range = 42
+            if bb_only:
+                feature_range = 8 # bounding boxes are indices 4-7
+            else:
+                feature_range = 42 # 4 + 19*2 is num of cols in file
+                
+            while i<feature_range: 
                 orig_dim = get_dim(path)
                 field1 = fields[i]
                 field2 = fields[i+1]
@@ -109,14 +133,13 @@ def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, step
         pickle.dump(pickled, open(cache_path,'wb'))
 
     # get actual img and parts
-    print('Images found in '+ data_dir +': '+ str(count))
+    #print('Images found in '+ data_dir +': '+ str(count))
    # get files in data_dir
     filenames = [file for file in glob.glob(data_dir+'*/*', recursive=True)]
     filenames.sort()
     i = 0
     num_files = len(filenames)
-    if bottleneck_file is not None:
-        bottleneck = np.load(open(bottleneck_file,'rb'))
+    
     batch_count = 0
     while i < num_files:
         
@@ -132,8 +155,8 @@ def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, step
                 break
             img = filenames[i+j]
             y = features[img]
-            if bottleneck_file:
-                data_bottleneck.append(bottleneck[i+j])
+            if bottlenecks is not None:
+                data_bottleneck.append(bottlenecks[i+j])
             if load_image:
                 x = get_img_array(img, target_dim=target_dim)
                 data_img.append(x)
@@ -144,17 +167,17 @@ def img_parts_generator(parts_filename, data_dir, cache=True,batch_size=10, step
         batch_count += 1
         data_img, data_parts, data_bottleneck = np.asarray(data_img), np.array(data_parts), np.array(data_bottleneck)
         #print(data_img.shape)
-        if bottleneck_file and load_image and load_paths:
+        if bottlenecks is not None and load_image and load_paths:
             yield data_bottleneck, data_parts, data_img, data_paths
-        elif bottleneck_file and load_image:
+        elif bottlenecks is not None and load_image:
             yield data_bottleneck, data_parts, data_img
-        elif bottleneck_file and load_paths:
+        elif bottlenecks  is not None and load_paths:
             yield data_bottleneck, data_parts, data_paths
         elif load_image and load_paths:
             yield data_img, data_parts, data_paths
         elif load_image:
             yield data_img, data_parts
-        elif bottleneck_file:
+        elif bottlenecks is not None:
             yield data_bottleneck, data_parts
         elif load_paths:
             yield data_paths, data_parts
