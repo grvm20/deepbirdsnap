@@ -20,12 +20,12 @@ nb_validation_samples = 3000
 nb_test_samples = 4500
 epochs = 30
 
-exp_name = 'top_bb'
+exp_name = 'v3_top_bb'
 bottleneck_dir = '/data/bottlenecks_bak/'
 def train_top_model():
 
     # load top model architecture
-    top_model, _, _ = create_top_model(num_classes=4) 
+    top_model, _, _ = create_top_model(num_classes=4, activation=None, weights='models/v2_top_bb_30_28.0000.hdf5') 
     top_model.compile(optimizer=optimizers.Adam(),
                loss='mean_absolute_error', metrics=['accuracy'] )
 

@@ -2,7 +2,7 @@
 Load bottlenecks with target parts and train FC layer.  
 """
 import gc
-import utils_temp as utils
+import utils
 import numpy as np
 from keras.callbacks import TensorBoard, ModelCheckpoint
 from inceptionv4 import create_top_model
@@ -14,7 +14,9 @@ import time
 import pickle
 
 batch_size = 10
-nb_classes = 500
+
+train_data_dir = 'train/'
+validation_data_dir = 'validation/'
 
 part_file_name = 'parts_info.txt'
 

@@ -8,6 +8,14 @@ from keras.preprocessing.image import load_img, img_to_array
 import glob
 import pickle
 import numpy as np
+
+def dir_avail(dir_name):
+    """
+    Create directory if not present
+    """
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
 def get_dim(filename):
     im = Image.open(filename)
     return im.size
@@ -30,7 +38,7 @@ def load_bottlenecks(filename):
 def img_parts_generator(parts_filename, data_dir, 
         cache=True,batch_size=10, steps=None, target_dim=(299,299), 
         bottlenecks=None, unpickled=None, load_image=False, 
-        load_paths=False, bb_only=False):
+        load_paths=False, bb_only=False, load_orig_img=False, load_parts=True):
     """
     Return batches of (numpy image, bird parts features) for given directory
     parts_filename: 
@@ -59,78 +67,79 @@ def img_parts_generator(parts_filename, data_dir,
         True/False
         Return only bounding box as feature
     """
-    # check if cahced features exist
-    if bb_only:
-        cache_prefix = 'bb_'
-    else:
-        cache_prefix = 'parts_'
-    cache_path = 'cache/'+cache_prefix+data_dir[:-1]+'.p'
-    data_dir = '../'+ data_dir
-    if unpickled:
-        features = unpickled['features']
-        count = unpickled['count']  
-    elif cache and isfile(cache_path):
-        print('Loaded cached features from '+cache_path)
-        unpickled = pickle.load(open(cache_path,'rb'))
-        features = unpickled['features']
-        count = unpickled['count']
-    else:
-        # load parts data from file
-        with open(parts_filename,'r') as f:
-            lines = f.readlines()
-        
-        count = 0
-        print(len(lines))
-        features = {} # map processed features to file path
-        bar = Bar('Extracting features', max=len(lines)) # show progress bar
-        for l in lines:
-            #split and strip fields
-            fields = l.strip().split('\t')
-            fields = [x.strip() for x in fields]
-            if isfile(data_dir + fields[2]):
-                path = data_dir + fields[2]
-                count += 1
-            else:
-                # continue if file is not a part of current dir
-                # eg: if data_dir is validation but current sample is in train
-                continue
+    if load_parts:
+        # check if cahced features exist
+        if bb_only:
+            cache_prefix = 'bb_'
+        else:
+            cache_prefix = 'parts_'
+        cache_path = 'cache/'+cache_prefix+data_dir[:-1]+'.p'
+        data_dir = '../'+ data_dir
+        if unpickled:
+            features = unpickled['features']
+            count = unpickled['count']  
+        elif cache and isfile(cache_path):
+            print('Loaded cached features from '+cache_path)
+            unpickled = pickle.load(open(cache_path,'rb'))
+            features = unpickled['features']
+            count = unpickled['count']
+        else:
+            # load parts data from file
+            with open(parts_filename,'r') as f:
+                lines = f.readlines()
+            
+            count = 0
+            print(len(lines))
+            features = {} # map processed features to file path
+            bar = Bar('Extracting features', max=len(lines)) # show progress bar
+            for l in lines:
+                #split and strip fields
+                fields = l.strip().split('\t')
+                fields = [x.strip() for x in fields]
+                if isfile(data_dir + fields[2]):
+                    path = data_dir + fields[2]
+                    count += 1
+                else:
+                    # continue if file is not a part of current dir
+                    # eg: if data_dir is validation but current sample is in train
+                    continue
 
-            row = []
-            i = 4 # bounding box and other part info starts from column index 4
-            featue_range = 42
-            if bb_only:
-                feature_range = 8 # bounding boxes are indices 4-7
-            else:
-                feature_range = 42 # 4 + 19*2 is num of cols in file
-                
-            while i<feature_range: 
-                orig_dim = get_dim(path)
-                field1 = fields[i]
-                field2 = fields[i+1]
-                # use -1 if feature does not exist
-                if field1.lower() == 'null' or field2.lower() == 'null':
-                    field1 = -1
-                    field2 = -1
+                row = []
+                i = 4 # bounding box and other part info starts from column index 4
+                featue_range = 42
+                if bb_only:
+                    feature_range = 8 # bounding boxes are indices 4-7
                 else:
-                    field1 = int(field1)
-                    field2 = int(field2)
-                point = (field1, field2)
-                
-                # scale the point to target img dim
-                if target_dim:
-                    scaled_feature = scale(point,orig_dim,target_dim=target_dim)
-                else:
-                    scaled_feature = point
-                
-                row.append(scaled_feature[0])
-                row.append(scaled_feature[1])
-                i += 2
-            features[path] = row
-            bar.next()
-        bar.finish()
-        # pickle this info to do it only once
-        pickled = {'features':features, 'count':count}
-        pickle.dump(pickled, open(cache_path,'wb'))
+                    feature_range = 42 # 4 + 19*2 is num of cols in file
+                    
+                while i<feature_range: 
+                    orig_dim = get_dim(path)
+                    field1 = fields[i]
+                    field2 = fields[i+1]
+                    # use -1 if feature does not exist
+                    if field1.lower() == 'null' or field2.lower() == 'null':
+                        field1 = -1
+                        field2 = -1
+                    else:
+                        field1 = int(field1)
+                        field2 = int(field2)
+                    point = (field1, field2)
+                    
+                    # scale the point to target img dim
+                    if target_dim:
+                        scaled_feature = scale(point,orig_dim,target_dim=target_dim)
+                    else:
+                        scaled_feature = point
+                    
+                    row.append(scaled_feature[0])
+                    row.append(scaled_feature[1])
+                    i += 2
+                features[path] = row
+                bar.next()
+            bar.finish()
+            # pickle this info to do it only once
+            pickled = {'features':features, 'count':count}
+            pickle.dump(pickled, open(cache_path,'wb'))
 
     # get actual img and parts
     #print('Images found in '+ data_dir +': '+ str(count))
@@ -147,42 +156,43 @@ def img_parts_generator(parts_filename, data_dir,
             break
         
         data_img = []
+        data_orig_img = []
         data_parts = []
         data_bottleneck = []
         data_paths = []
+         
         for j in range(batch_size):
             if i+j>= num_files:
                 break
             img = filenames[i+j]
-            y = features[img]
             if bottlenecks is not None:
                 data_bottleneck.append(bottlenecks[i+j])
-            if load_image:
-                x = get_img_array(img, target_dim=target_dim)
-                data_img.append(x)
+            if(load_orig_img):
+                data_orig_img.append(get_img_array(img, target_dim=None))
+            if(load_image):
+                data_img.append(get_img_array(img, target_dim=target_dim))
             if load_paths:
                 data_paths.append(img)
-            data_parts.append(y)
+            if load_parts:
+                data_parts.append(features[img])
         i += batch_size
         batch_count += 1
-        data_img, data_parts, data_bottleneck = np.asarray(data_img), np.array(data_parts), np.array(data_bottleneck)
+        data_orig_img, data_img, data_parts, data_bottleneck = np.asarray(data_orig_img), np.asarray(data_img), np.asarray(data_parts), np.asarray(data_bottleneck)
         #print(data_img.shape)
-        if bottlenecks is not None and load_image and load_paths:
-            yield data_bottleneck, data_parts, data_img, data_paths
-        elif bottlenecks is not None and load_image:
-            yield data_bottleneck, data_parts, data_img
-        elif bottlenecks  is not None and load_paths:
-            yield data_bottleneck, data_parts, data_paths
-        elif load_image and load_paths:
-            yield data_img, data_parts, data_paths
-        elif load_image:
-            yield data_img, data_parts
-        elif bottlenecks is not None:
-            yield data_bottleneck, data_parts
-        elif load_paths:
-            yield data_paths, data_parts
-        else:
-            yield data_parts
+        ret_values = []
+        if bottlenecks:
+            ret_values.append(data_bottleneck)
+        if load_image:
+            ret_values.append(data_img)
+        if load_orig_img:
+            ret_values.append(data_orig_img)
+        if load_paths:
+            ret_values.append(data_paths)
+        if load_parts:
+            ret_values.append(data_parts)
+
+        yield tuple(ret_values)
+
 def get_labels_from_dir():
     """
     Get subdirs in a dir

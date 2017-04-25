@@ -333,7 +333,7 @@ def create_top_model(inputs=None, weights=None, num_classes=500, activation='sof
         print('Loaded top model weights')
     return top_model,x,inputs
 
-def create_model(weights=None, weights_output_dim=None, num_classes=500, freeze_level=None, top_weights=None, include_top=True, activation='softmax'):
+def create_model(weights=None, weights_output_dim=None, num_classes=500, freeze_level=None, top_weights=None, include_top=True, activation='softmax', return_input=False):
     """
     Create model with our 500 class top model. 
     Weights:
@@ -383,9 +383,13 @@ def create_model(weights=None, weights_output_dim=None, num_classes=500, freeze_
 
     if not include_top:
         base_model = defrost_inceptionv4.layers[-2]
+        if return_input:
+            return base_model, base_inputs
         return base_model
-
-    return defrost_inceptionv4
+    if return_input:
+        return defrost_inceptionv4, base_inputs
+    else:
+        return defrost_inceptionv4
 
 def fuse(base_inputs, base, top):
     fused = Model(input=base_inputs, output=top(base(base_inputs)))
