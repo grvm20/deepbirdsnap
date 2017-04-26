@@ -11,7 +11,7 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras import optimizers, metrics
 
-batch_size = 128
+batch_size = 256
 nb_classes = 500
 
 def get_fixed_labels(interval, nb_classes=500):
@@ -30,11 +30,11 @@ def get_fixed_labels(interval, nb_classes=500):
     return labels
 
 def train_top_model():
-    exp_name = 'two_towers_topv2' 
+    exp_name = 'two_towers_top_predAndWhole' 
 
     # load bottlenecks
     print('Train')
-    train_data = np.load(open('/data/bottlenecks_bak/cropped_60_train.npy', 'rb'))
+    train_data = np.load(open('/data/bottlenecks_bak/cropped_pred_77_train.npy', 'rb'))
     print(train_data.shape)
     train_labels = utils.get_labels_from_file('train_labels.txt')
     print(len(train_labels))
@@ -47,7 +47,7 @@ def train_top_model():
     print(len(train_labels2))
     
     print('Validation')
-    validation_data = np.load(open('/data/bottlenecks_bak/cropped_60_validation.npy', 'rb'))
+    validation_data = np.load(open('/data/bottlenecks_bak/cropped_pred_77_validation.npy', 'rb'))
     print(validation_data.shape)
     val_size_per_class = 6
     validation_labels = get_fixed_labels(val_size_per_class)

@@ -40,25 +40,25 @@ def scale_bounding_box(t_l, b_r, orig_image_dim, scale=1.0):
     return (t_l_0, t_l_1), (b_r_0, b_r_1)
 
 part_file_name = 'parts_info.txt'
-validation_data_dir = 'validation/'
+#validation_data_dir = 'validation/'
 batch_size = 100
 target_dim=(299, 299)
 cache=False
-save_path = '../cropped_pred_scale1.05'
+save_path = '../cropped_pred_scale1.1'
 
 model = create_model(num_classes=4, weights='best_weights/defrost_all_bb_8.hdf5', activation=None)
 print(model.summary())
 model.compile(optimizer='adam', loss='mean_absolute_error', metrics=['accuracy'])
 
-#direcs = ['validation/','test/', 'train/']
-#nums = [3000, 4500, 42320]
-direcs = ['validation/']
-nums = [3000]
+direcs = ['test/', 'train/']
+nums = [4500, 42320]
+#direcs = ['validation/']
+#nums = [3000]
 for direc,num in zip(direcs,nums):
     gen = img_parts_generator(part_file_name, direc, batch_size=batch_size, load_image=True, target_dim=target_dim, cache=False, load_paths=True, load_orig_img=True, bb_only=True)
     bar = Bar('Cropping: '+direc[:-1],max=num)
     for imgs, orig_imgs, paths, parts in gen:
-        preds = model.predict_on_batch(np.array(imgs))
+        preds = model.predict(imgs,batch_size=100,verbose=1)
         for i in range(len(imgs)):
             img = imgs[i]
             orig_img = orig_imgs[i]
@@ -72,7 +72,7 @@ for direc,num in zip(direcs,nums):
             b_r_point = scale(b_r_point, orig_img.shape)
             t_l_point = scale(t_l_point, orig_img.shape)
             
-            t_l_point, b_r_point = scale_bounding_box(t_l_point, b_r_point, orig_img.shape, scale=1.05)
+            t_l_point, b_r_point = scale_bounding_box(t_l_point, b_r_point, orig_img.shape, scale=1.1)
             # get bounding boxes
             t_l_x = int(t_l_point[0])
             t_l_y = int(t_l_point[1])

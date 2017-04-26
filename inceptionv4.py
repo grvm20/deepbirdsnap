@@ -383,7 +383,9 @@ def two_towers(tower1_weights=None, tower1_weights_output_dim=None,
         
     return two_towers
 
-   def create_top_model(inputs=None, weights=None, num_classes=500, activation='softmax'):
+
+
+def create_top_model(inputs=None, weights=None, num_classes=500, activation='softmax'):
     """
     Create top model as defined by the Inceptionv4 architecture. 
     Loads weights if top weights file path is specified

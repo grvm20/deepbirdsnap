@@ -13,9 +13,9 @@ from inceptionv4 import create_model
 
 img_width, img_height = 299, 299
 
-train_data_dir = '../cropped/train'
-validation_data_dir = '../cropped/validation'
-test_data_dir = '../cropped/test'
+train_data_dir = '../cropped_pred_scale1.1/train'
+validation_data_dir = '../cropped_pred_scale1.1/validation'
+test_data_dir = '../cropped_pred_scale1.1/test'
 
 #nb_classes = 500
 nb_parts = 2*19
@@ -23,29 +23,29 @@ nb_train_samples = 42320
 nb_validation_samples = 3000
 nb_test_samples = 4500
 
-batch_size = 10
+batch_size = 20
 
-bottleneck_dir = 'bottleneck/'
-exp_name = 'cropped_60'
+bottleneck_dir = '/data/bottlenecks_bak/'
+exp_name = 'cropped_pred_77'
 
 def save_bottleneck_features():
     datagen = ImageDataGenerator(rescale=1. / 255)
-
-    model = create_model(num_classes=500, include_top=False, weights='best_weights/defrost_everything_init_47_freeze_fixed_weights.03-0.60.hdf5')
-
+    #weights='best_weights/defrost_everything_init_47_freeze_fixed_weights.03-0.60.hdf5')
+    weights = 'best_weights/defrost_all_cropped_77.hdf5'
+    model = create_model(num_classes=500, include_top=False, weights=weights)
     print(model.summary())
 
-    #validation_generator = datagen.flow_from_directory(
-    #                    validation_data_dir,
-    #                    target_size=(img_width, img_height),
-    #                    batch_size=batch_size,
-    #                    shuffle=False,
-    #                    class_mode=None)
-#
-#    bottleneck_features_validation = model.predict_generator(
-#                                    validation_generator, nb_validation_samples // batch_size, verbose=1)
-#
-#    np.save(open(bottleneck_dir + exp_name+'_validation.npy', 'wb'), bottleneck_features_validation)
+    validation_generator = datagen.flow_from_directory(
+                        validation_data_dir,
+                        target_size=(img_width, img_height),
+                        batch_size=batch_size,
+                        shuffle=False,
+                        class_mode=None)
+
+    bottleneck_features_validation = model.predict_generator(
+                                    validation_generator, nb_validation_samples // batch_size, verbose=1)
+
+    np.save(open(bottleneck_dir + exp_name+'_validation.npy', 'wb'), bottleneck_features_validation)
 
     train_generator = datagen.flow_from_directory(train_data_dir,
                         target_size=(img_width, img_height),
