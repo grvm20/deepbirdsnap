@@ -315,7 +315,75 @@ def inception_v4(num_classes=500, dropout_keep_prob=0.2, weights='imagenet', inc
 # Below are our functions#
 ##########################
 
-def create_top_model(inputs=None, weights=None, num_classes=500, activation='softmax'):
+def two_towers_top(input1=None, input2=None, weights=None, num_classes=500, activation='softmax'):
+    """
+    Create top model as defined by the Inceptionv4 architecture. 
+    Two inputs each of 8x8x1538 (output of inceptionv4 base).
+    Concat inputs. 
+    Loads weights if top weights file path is specified
+    """
+    # input to top model is the activation after the last conv block of inception
+    if input1 is None:
+        input1 = Input((8,8,1536))
+    if input2 is None:
+        input2 = Input((8,8,1536))
+    # concatenate along channel axis
+    x = concatenate([input1, input2],axis=-1) 
+    x = AveragePooling2D((8, 8), padding='valid')(x)
+    x = Dropout(0.2)(x)
+    x = Flatten()(x)
+    x = Dense(units=num_classes, activation=activation)(x)
+    top_model = Model(input=[input1,input2], output=x)
+    if weights: 
+        top_model.load_weights(weights)
+        print('Loaded top model weights')
+    return top_model,x,[input1,input2]
+
+def two_towers(tower1_weights=None, tower1_weights_output_dim=None, 
+                tower2_weights=None, tower2_weights_output_dim=None,
+                top_weights=None, num_classes=500, 
+                activation='softmax', return_input=False,
+                two_tower_weights=None):
+    """
+    Create model: Two conv towers, output of which concat into Dropout + FC top. 
+    Weights:
+        path to weight file
+    freeze_level (defrost means trainable):
+        None [default] = freeze nothing, whole network is trainable
+        0 = freeze stem
+        1 = freeze stem and A block
+        2 = freeze stem and A, B blocks
+        3 = freeze stem and A, B, C blocks
+    include_top:
+        if False, returns the base inceptionv4 model without FC layers
+    top_weights:
+        weights to load into top model
+    activation: 
+        activation function applied to output
+    return_input:
+        return input of model
+    """
+    
+    # get tower 1
+    tower1, input1 = create_model(include_top=False, return_input=True,
+            weights=tower1_weights, weights_output_dim=tower1_weights_output_dim)
+    # get tower 2
+    tower2, input2 = create_model(include_top=False, return_input=True,
+            weights=tower2_weightss, weights_output_dim=tower2_weights_output_dim)
+    # get top
+    top, x, top_inputs = two_towers_top(weights=top_weights,
+                            num_classes=num_classes,
+                            activation=activation)
+
+    two_towers = Model(input=[input1,input2], 
+            output=top([tower1(input1),tower2(input2)]))
+
+    if two_tower_weights:
+        two_towers.load_weights(two_tower_weights)
+        
+    return two_towers
+
+   def create_top_model(inputs=None, weights=None, num_classes=500, activation='softmax'):
     """
     Create top model as defined by the Inceptionv4 architecture. 
     Loads weights if top weights file path is specified
