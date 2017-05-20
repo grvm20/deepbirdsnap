@@ -8,6 +8,21 @@ from keras.preprocessing.image import load_img, img_to_array
 import glob
 import pickle
 import numpy as np
+from keras import backend as K
+
+def top_k_arg(probs, k=10):
+    """
+    probs: vector of probabilities (of classes)
+    returns indices of top-k probabilities
+    """
+    indices = np.argpartition(probs, -k)[-k:]
+    return indices
+
+def top3acc(y_true,y_pred,k=3):
+    return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)
+
+def top5acc(y_true, y_pred, k=5):
+    return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k), axis=-1)
 
 def dir_avail(dir_name):
     """
@@ -15,6 +30,15 @@ def dir_avail(dir_name):
     """
     if not os.path.exists(dir_name):
         os.makedirs(dir_name)
+
+def get_idx2label(filename='unique_labels500.txt'):
+    """
+    filename: file with list of class names in sorted order
+    returns: idx2label mapping (list) 0...(num_labels-1)
+    """
+    labels = open(filename, 'r').readlines()
+    labels = [l.strip() for l in labels]
+    return labels
 
 def get_dim(filename):
     im = Image.open(filename)
@@ -247,4 +271,19 @@ def get_labels_from_file(filename, return_mapping=False):
         return label_name_mapping
     else:
         return labels
+
+def labels_contiguous(interval, num_classes=500):
+    """
+    interval: number of images per class
+    nb_classes: number of classes
+
+    return onehot vector for each sample (interval*nb_classes samples assumed)
+    """
+    labels = []
+    for i in range(num_classes):
+        for j in range(interval):
+            onehot = [0]*num_classes
+            onehot[i] = 1
+            labels.append(onehot)
+    return labels
 

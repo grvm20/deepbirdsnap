@@ -1,0 +1,72 @@
+
+(newbirds) ➜  pyscripts python3 defrost_train_entire_model.py
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcublas.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcudnn.so.5 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcufft.so.8.0 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcuda.so.1 locally
+I tensorflow/stream_executor/dso_loader.cc:135] successfully opened CUDA library libcurand.so.8.0 locally
+Using TensorFlow backend.
+Found 7180 images belonging to 200 classes.
+Found 1600 images belonging to 200 classes.
+Inceptionv4 Base loaded
+/home/ubuntu/CUB_200_2011/pyscripts/inceptionv4.py:330: UserWarning: Update your `Model` call to the Keras 2 API: `Model(outputs=Tensor("de..., inputs=Tensor("in...)`
+  top_model = Model(input=inputs, output=x)
+/home/ubuntu/CUB_200_2011/pyscripts/inceptionv4.py:391: UserWarning: Update your `Model` call to the Keras 2 API: `Model(outputs=Tensor("mo..., inputs=Tensor("in...)`
+  fused = Model(input=base_inputs, output=top(base(base_inputs)))
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE3 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.1 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use SSE4.2 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use AVX2 instructions, but these are available on your machine and could speed up CPU computations.
+W tensorflow/core/platform/cpu_feature_guard.cc:45] The TensorFlow library wasn't compiled to use FMA instructions, but these are available on your machine and could speed up CPU computations.
+I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:910] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:885] Found device 0 with properties:
+name: Tesla K80
+major: 3 minor: 7 memoryClockRate (GHz) 0.8235
+pciBusID 0000:00:1e.0
+Total memory: 11.17GiB
+Free memory: 11.11GiB
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:906] DMA: 0
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:916] 0:   Y
+I tensorflow/core/common_runtime/gpu/gpu_device.cc:975] Creating TensorFlow device (/gpu:0) -> (device: 0, name: Tesla K80, pci bus id: 0000:00:1e.0)
+Weights loaded
+Loaded top model weights
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         (None, 299, 299, 3)       0
+_________________________________________________________________
+inception_v4 (Model)         (None, 8, 8, 1536)        41174400
+_________________________________________________________________
+model_3 (Model)              (None, 200)               307400
+=================================================================
+Total params: 41,481,800.0
+Trainable params: 41,418,632.0
+Non-trainable params: 63,168.0
+_________________________________________________________________
+None
+Epoch 1/5
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3870 get requests, put_count=2986 evicted_count=1000 eviction_rate=0.334896 and unsatisfied allocation rate=0.512661
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 100 to 110
+  5/448 [..............................] - ETA: 1348s - loss: 0.3546 - acc: 0.9000 - top_k_categorical_accuracy: 1.0000I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 84 get requests, put_count=1101 evicted_count=1000 eviction_rate=0.908265 and unsatisfied allocation rate=0
+ 11/448 [..............................] - ETA: 978s - loss: 0.3595 - acc: 0.9205 - top_k_categorical_accuracy: 1.0000 I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 237 get requests, put_count=1128 evicted_count=1000 eviction_rate=0.886525 and unsatisfied allocation rate=0.578059
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 309 to 339
+ 17/448 [>.............................] - ETA: 864s - loss: 0.3775 - acc: 0.9228 - top_k_categorical_accuracy: 0.9890I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 3917 get requests, put_count=3620 evicted_count=1000 eviction_rate=0.276243 and unsatisfied allocation rate=0.347715
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 720 to 792
+ 38/448 [=>............................] - ETA: 725s - loss: 0.4112 - acc: 0.9046 - top_k_categorical_accuracy: 0.9852I tensorflow/core/common_runtime/gpu/pool_allocator.cc:247] PoolAllocator: After 31549 get requests, put_count=31620 evicted_count=1000 eviction_rate=0.0316256 and unsatisfied allocation rate=0.034803
+I tensorflow/core/common_runtime/gpu/pool_allocator.cc:259] Raising pool_size_limit_ from 1863 to 2049
+448/448 [==============================] - 775s - loss: 0.3810 - acc: 0.9164 - top_k_categorical_accuracy: 0.9941 - val_loss: 0.6172 - val_acc: 0.8387 - val_top_k_categorical_accuracy: 0.9625
+Epoch 2/5
+448/448 [==============================] - 766s - loss: 0.2582 - acc: 0.9531 - top_k_categorical_accuracy: 0.9969 - val_loss: 0.6278 - val_acc: 0.8450 - val_top_k_categorical_accuracy: 0.9600
+Epoch 3/5
+448/448 [==============================] - 763s - loss: 0.1895 - acc: 0.9693 - top_k_categorical_accuracy: 0.9989 - val_loss: 0.6021 - val_acc: 0.8488 - val_top_k_categorical_accuracy: 0.9619
+Epoch 4/5
+448/448 [==============================] - 762s - loss: 0.1407 - acc: 0.9832 - top_k_categorical_accuracy: 0.9993 - val_loss: 0.5793 - val_acc: 0.8469 - val_top_k_categorical_accuracy: 0.9688
+Epoch 5/5
+448/448 [==============================] - 763s - loss: 0.1071 - acc: 0.9915 - top_k_categorical_accuracy: 1.0000 - val_loss: 0.6149 - val_acc: 0.8550 - val_top_k_categorical_accuracy: 0.9637
+[0.58241456307470796, 0.84812500000000002, 0.96937499999999999]
+Exception ignored in: <bound method BaseSession.__del__ of <tensorflow.python.client.session.Session object at 0x7f42507cbc88>>
+Traceback (most recent call last):
+  File "/home/ubuntu/birdsnap_dataset/deepbirdsnap/newbirds/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 582, in __del__
+AttributeError: 'NoneType' object has no attribute 'TF_DeleteStatus'
+(newbirds) ➜  pyscripts

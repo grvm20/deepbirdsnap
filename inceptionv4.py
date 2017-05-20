@@ -339,6 +339,36 @@ def two_towers_top(input1=None, input2=None, weights=None, num_classes=500, acti
         print('Loaded top model weights')
     return top_model,x,[input1,input2]
 
+def two_towers_top_2fc(input1=None, input2=None, weights=None, num_classes=500, activation='softmax'):
+    """
+    Create top model as defined by the Inceptionv4 architecture
+    except with an additional FC layer.
+    Two inputs each of 8x8x1538 (output of inceptionv4 base).
+    Concat inputs. 
+    Loads weights if top weights file path is specified
+    """
+    # input to top model is the activation after the last conv block of inception
+    if input1 is None:
+        input1 = Input((8,8,1536))
+    if input2 is None:
+        input2 = Input((8,8,1536))
+    # concatenate along channel axis
+    x = concatenate([input1, input2],axis=-1) 
+    x = AveragePooling2D((8, 8), padding='valid')(x)
+    x = Dropout(0.2)(x)
+    x = Flatten()(x)
+    x = Dense(units=1000, activation='relu')(x)
+    x = Dropout(0.2)(x)
+    x = Dense(units=700, activation='relu')(x)
+    x = Dropout(0.2)(x)
+    x = Dense(units=num_classes, activation=activation)(x)
+    top_model = Model(input=[input1,input2], output=x)
+    if weights: 
+        top_model.load_weights(weights)
+        print('Loaded top model weights')
+    return top_model,x,[input1,input2]
+
+
 def two_towers(tower1_weights=None, tower1_weights_output_dim=None, 
                 tower2_weights=None, tower2_weights_output_dim=None,
                 top_weights=None, num_classes=500, 
