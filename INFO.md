@@ -1,17 +1,20 @@
 ### Directory structure: 
 ```
-birdsnap_dataset/
+~/birdsnap_dataset/
 	deepbirdsnap/ - Our Git repo with all the code. Models, logs, etc. are gitignored. 
 		bash_scripts/ - For data wrangling 
 		best_weights/ - best weights for each iterations
 		bottleneck/ - FC bottlenecks of data
-		console_dumps/ - Keras training console output dumps
-		logs/ - Tensorflow logs generated as a result of callbacks
+		console_dumps/ - Keras training console output dumps and some manual logging when using custom generator with fit function. The logs you're looking for should be either here or in logs/.
+		logs/ - Tensorflow logs generated as a result of callbacks. 
 		old/ - archived files
 	train/ - 42320 images 
 	validation/ - 3000 images
 	test/ - 4500 images
 	removed/ - images present in original data not being used. 1 - cant open image, 5 - .gif files and 3 - removed to make train data size multiple of 10 for bottleneck generation
+/data/
+	bottlenecks_bak/ - bottleneck numpy arrays
+~/CUB_2011_200/ - Experiments with the CUB dataset. These are files from birdsnap repo copied over and modified to use the CUB dataset. This is not a part of the Git repo. Files will be old but working. 
 ```
 ### Naming convention:
 ```
