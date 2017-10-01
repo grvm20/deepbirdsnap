@@ -1,9 +1,16 @@
-# Move k files (k specified as param of head) from each subdir in 
-#current dir to a specified dir (specified as param of cp)
+# Copy files from master data folder into split folder
+# USAGE: create_split.sh src_dir target_dir num_imgs_per_class
+# Example: bash create_split.sh images validation 100
+if [ ! -d "$1/../$2" ]; then
+	mkdir "$1/../$2"
+	echo "CREATED $1/../$2"
+fi
 
-for D in `find . -mindepth 1 -maxdepth 1 -type d`
+for D in `find $1 -mindepth 1 -maxdepth 1 -type d`
 do
+IFS='/' read -ra DD <<< "${D}"
+LABEL=${DD[-1]}
 echo ${D}
-mkdir "../train_small/"${D}
-find ${D}"/" -mindepth 1 -maxdepth 1 -type f | head -3 | xargs cp -t "../train_small/"${D}
+mkdir "$1/../$2/"${LABEL}
+find ${D}"/" -mindepth 1 -maxdepth 1 -type f | head -n $3 | xargs mv -t"$1/../$2/"${LABEL}
 done
